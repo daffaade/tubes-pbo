@@ -44,8 +44,7 @@ public class Pesanan {
        return getTotalObat() + ongkir + biayaPengemasan; 
     } 
 
-    //getter
-
+    //getter   
     public String getNoPesanan() { return noPesanan; }
     public List<ItemKeranjang> getItems() { return items; }
     public String getJenisAmbil() { return jenisAmbil; }
@@ -55,7 +54,7 @@ public class Pesanan {
     public String getMetodeBayar() { return metodePembayaran; }
     public Date getTanggal() { return tanggal; }
 
-// mengubah pesanan menjadi satu baris teks panjang  agar bisa di simpan di file txt
+// mengubah pesanan menjadi satu baris teks panjang 
     @Override
     public String toString() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");

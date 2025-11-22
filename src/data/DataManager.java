@@ -1,7 +1,7 @@
 package data;
 
-import model.*;
 import java.util.*;
+import model.*;
 
 public class DataManager {
     
@@ -182,5 +182,19 @@ public class DataManager {
     
     public List<Pesanan> getHistoryPembelian() {
         return daftarPesanan;
+    }
+
+    public static List<peta> getLokasi() {
+        List<peta> lokasiList = new ArrayList<>();
+
+        lokasiList.add(new peta("Jebres", 5));
+        lokasiList.add(new peta("Pasar Kliwon", 3));
+        lokasiList.add(new peta("Rumah Sakit Muwardi", 6));
+        lokasiList.add(new peta("Pasar Gede", 8));
+        lokasiList.add(new peta("Alun-alun", 6));
+        lokasiList.add(new peta("Slamet Riyadi", 7));
+
+
+        return lokasiList;
     }
 }

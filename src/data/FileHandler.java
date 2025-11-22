@@ -49,6 +49,7 @@ public class FileHandler {
         
         return data;
     }
+    
     // menyimpan banyak data sekaligus ke file 
     public static void simpanSemuaKeFile(String namaFile, List<String> data) {
         buatDirektori();

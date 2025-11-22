@@ -1,4 +1,3 @@
-// File: src/ui/LoginFrame.java
 package ui;
 
 import data.DataManager;
@@ -165,7 +164,7 @@ public class LoginFrame extends JFrame {
             mainFrame.setVisible(true);
             
             // Tutup login frame
-            dispose(); // melepaskan memori yang dialokasikan ke variabel saat objek status dihapus.
+            dispose(); 
         } else {
             JOptionPane.showMessageDialog(this,
                 "Username atau password salah!",
@@ -177,7 +176,7 @@ public class LoginFrame extends JFrame {
     
     private void showRegisterDialog() {
         JDialog dialog = new JDialog(this, "Register User Baru", true);
-        dialog.setSize(400, 450);
+        dialog.setSize(400, 400); // Ukuran disesuaikan karena alamat hilang
         dialog.setLocationRelativeTo(this);
         
         JPanel panel = new JPanel();
@@ -190,9 +189,7 @@ public class LoginFrame extends JFrame {
         JPasswordField txtRegPassword = new JPasswordField();
         JPasswordField txtRegConfirm = new JPasswordField();
         JTextField txtRegNama = new JTextField();
-        JTextArea txtRegAlamat = new JTextArea(3, 20);
-        txtRegAlamat.setLineWrap(true);
-        txtRegAlamat.setWrapStyleWord(true);
+        // [HAPUS] Bagian JTextArea Alamat dihapus
         JTextField txtRegTelp = new JTextField();
         
         txtRegUsername.setMaximumSize(new Dimension(400, 30));
@@ -213,9 +210,9 @@ public class LoginFrame extends JFrame {
         panel.add(new JLabel("Nama Lengkap:"));
         panel.add(txtRegNama);
         panel.add(Box.createVerticalStrut(10));
-        panel.add(new JLabel("Alamat:"));
-        panel.add(new JScrollPane(txtRegAlamat));
-        panel.add(Box.createVerticalStrut(10));
+        
+        // [HAPUS] Bagian panel.add Alamat dihapus
+        
         panel.add(new JLabel("No. Telepon:"));
         panel.add(txtRegTelp);
         panel.add(Box.createVerticalStrut(20));
@@ -238,11 +235,11 @@ public class LoginFrame extends JFrame {
             String password = new String(txtRegPassword.getPassword());
             String confirm = new String(txtRegConfirm.getPassword());
             String nama = txtRegNama.getText().trim();
-            String alamat = txtRegAlamat.getText().trim();
+            // [HAPUS] String alamat dihapus
             String telp = txtRegTelp.getText().trim();
             
-            if (username.isEmpty() || password.isEmpty() || nama.isEmpty() || 
-                alamat.isEmpty() || telp.isEmpty()) {
+            // Validasi (Alamat dihapus)
+            if (username.isEmpty() || password.isEmpty() || nama.isEmpty() || telp.isEmpty()) {
                 JOptionPane.showMessageDialog(dialog,
                     "Semua field harus diisi!",
                     "Peringatan",
@@ -258,7 +255,9 @@ public class LoginFrame extends JFrame {
                 return;
             }
             
+            // [UBAH] Konstruktor Users sekarang cuma 4 parameter (tanpa alamat)
             Users newUser = new Users(username, password, nama, telp);
+            
             if (dataManager.register(newUser)) {
                 JOptionPane.showMessageDialog(dialog,
                     "Registrasi berhasil!\nSilakan login dengan akun baru Anda.",

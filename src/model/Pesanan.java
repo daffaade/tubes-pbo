@@ -14,8 +14,7 @@ public class Pesanan {
     private String metodePembayaran; //cod atau online 
     private Date tanggal;
 
-
-    public Pesanan(String noPesanan, List<ItemKeranjang> item, String jenisAmbil, String alamat,
+    public Pesanan(String noPesanan, List<ItemKeranjang> items, String jenisAmbil, String alamat,
                    double ongkir, double biayaPengemasan, String metodePembayaran, Date tanggal) {
         this.noPesanan = noPesanan;
         this.items = items;

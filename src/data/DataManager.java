@@ -128,8 +128,8 @@ public class DataManager {
         List<String> dataUser = FileHandler.bacaDariFile("users.txt");
         if (dataUser.isEmpty()) {
             // User default
-            daftarUsers.add(new Users("admin", "admin123", "Administrator", "Jl. Admin No. 1", "081234567890"));
-            daftarUsers.add(new Users("user", "user123", "User Test", "Jl. User No. 2", "081234567891"));
+            daftarUsers.add(new Users("admin", "admin123", "Administrator", "081234567890"));
+            daftarUsers.add(new Users("user", "user123", "User Test", "081234567891"));
             simpanSemuaUsers();
         } else {
             for (String line : dataUser) {

@@ -26,7 +26,7 @@ public class Users {
     
     @Override
     public String toString() {
-        return String.format("%s|%s|%s|%s|%s", username, password, nama, noTelp);
+        return String.format("%s|%s|%s|%s", username, password, nama, noTelp);
     }
     
     public static Users fromString(String str) {

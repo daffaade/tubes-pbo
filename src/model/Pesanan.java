@@ -15,12 +15,12 @@ public class Pesanan {
     private Date tanggal;
 
     public Pesanan(String noPesanan, List<ItemKeranjang> items, String jenisAmbil, String alamat,
-                   double ongkir, double biayaPengemasan, String metodePembayaran, Date tanggal) {
+                   double jarak, double biayaPengemasan, String metodePembayaran, Date tanggal) {
         this.noPesanan = noPesanan;
         this.items = items;
         this.jenisAmbil = jenisAmbil;
         this.alamat = alamat;
-        this.ongkir = ongkir;
+        this.ongkir = jarak * 3000; // hitunfg ongkir berdasarkan jarak
         this.biayaPengemasan = biayaPengemasan;
         this.metodePembayaran = metodePembayaran;
         this.tanggal = new Date();

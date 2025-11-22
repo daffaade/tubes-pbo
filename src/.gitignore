@@ -1,0 +1,6 @@
+*.class
+*.jar
+bin/
+build/
+.vscode/
+.idea/

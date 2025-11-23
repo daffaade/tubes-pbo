@@ -1,0 +1,2 @@
+admin|admin123|Administrator|081234567890
+user|user123|User Test|081234567891

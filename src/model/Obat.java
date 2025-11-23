@@ -1,5 +1,10 @@
 package model;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Locale;
+
+
 public class Obat {
     private String kode;
     private String nama;
@@ -39,12 +44,29 @@ public class Obat {
     @Override
     // menubah objek obat menjadi string 
     public String toString() {
-        return String.format("%s|%s|%.2f|%d|%s", kode, nama, harga, stok, kategori);
+        return String.format(Locale.US, "%s|%s|%.2f|%d|%s", kode, nama, harga, stok, kategori);
     }
+
     // mengubah string kembali menjadi objek obat
     public static Obat fromString(String str) {
         String[] parts = str.split("\\|");
-        return new Obat(parts[0], parts[1], Double.parseDouble(parts[2]), 
-                       Integer.parseInt(parts[3]), parts[4]);
+
+        
+        try {
+            // Gunakan NumberFormat untuk membaca angka yang mungkin punya koma atau titik
+            NumberFormat nf = NumberFormat.getInstance(Locale.US); 
+            double harga = nf.parse(parts[2]).doubleValue(); // Gunakan NumberFormat untuk parsing
+            
+            return new Obat(parts[0], 
+                            parts[1], 
+                            harga, // Sudah benar dibaca
+                            Integer.parseInt(parts[3]), 
+                            parts[4]);
+                            
+        } catch (ParseException e) {
+            System.err.println("Gagal membaca format angka di baris: " + str);
+            // Pilihan: return null atau lemparkan exception lagi
+            return new Obat(parts[0], parts[1], 0.0, 0, parts[4]); // Fallback aman jika parsing harga gagal
+        }
     }
 }

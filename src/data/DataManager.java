@@ -59,10 +59,16 @@ public class DataManager {
     }
     
     public Obat cariObat(String kode) {
-        return daftarObat.stream()
-                .filter(o -> o.getKode().equals(kode))
-                .findFirst()
-                .orElse(null);
+        //perulangan pada setiap objek Obat di daftarObat
+        for (Obat obat : daftarObat) {
+            // pengecekan apakah kode obat cocok dengan kode yang dicari
+            if (obat.getKode().equalsIgnoreCase(kode)) {
+                //jika ketemu yang pertama (findFirst), langsung kembalikan objek tersebut
+                return obat;
+            }
+        }
+        //Jika perulangan selesai dan tidak ada yang ditemukan (orElse(null)), kembalikan null
+        return null;
     }
     
     public void simpanPesanan(Pesanan pesanan) {
@@ -184,15 +190,15 @@ public class DataManager {
         return daftarPesanan;
     }
 
-    public static List<peta> getLokasi() {
-        List<peta> lokasiList = new ArrayList<>();
+    public static List<Peta> getLokasi() {
+        List<Peta> lokasiList = new ArrayList<>();
 
-        lokasiList.add(new peta("Jebres", 5));
-        lokasiList.add(new peta("Pasar Kliwon", 3));
-        lokasiList.add(new peta("Rumah Sakit Muwardi", 6));
-        lokasiList.add(new peta("Pasar Gede", 8));
-        lokasiList.add(new peta("Alun-alun", 6));
-        lokasiList.add(new peta("Slamet Riyadi", 7));
+        lokasiList.add(new Peta("Jebres", 5));
+        lokasiList.add(new Peta("Pasar Kliwon", 3));
+        lokasiList.add(new Peta("Rumah Sakit Muwardi", 6));
+        lokasiList.add(new Peta("Pasar Gede", 8));
+        lokasiList.add(new Peta("Alun-alun", 6));
+        lokasiList.add(new Peta("Slamet Riyadi", 7));
 
 
         return lokasiList;

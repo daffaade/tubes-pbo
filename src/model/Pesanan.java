@@ -1,8 +1,7 @@
 package model;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class Pesanan {
     private String noPesanan;
@@ -13,6 +12,7 @@ public class Pesanan {
     private double biayaPengemasan;
     private String metodePembayaran; //cod atau online 
     private Date tanggal;
+    private double totalBayar;
 
     public Pesanan(String noPesanan, List<ItemKeranjang> items, String jenisAmbil, String alamat,
                    double ongkir, double biayaPengemasan, String metodePembayaran, Date tanggal) {
@@ -23,10 +23,20 @@ public class Pesanan {
         this.ongkir = ongkir;
         this.biayaPengemasan = biayaPengemasan;
         this.metodePembayaran = metodePembayaran;
-        this.tanggal = new Date();
-
-        
+        this.tanggal = new Date();        
     }
+
+    public Pesanan(String noPesanan) {
+        this.noPesanan = noPesanan;
+        this.items = new ArrayList<>();
+        this.jenisAmbil = "ambil"; // default
+        this.alamat = "";
+        this.ongkir = 0;
+        this.biayaPengemasan = 0;
+        this.metodePembayaran = "cod"; // default
+        this.tanggal = new Date();
+    }
+    
     // menghitung total obat dalam pesanan
     public double getTotalObat() {
     double total = 0;
@@ -41,7 +51,37 @@ public class Pesanan {
     // menghitung jumlah total 
     public double getTotalBayar() {
        return getTotalObat() + ongkir + biayaPengemasan; 
+    }
+
+    public void setTotalBayar(double totalBayar) {
+        this.totalBayar = totalBayar;
+    }
+
+    //setter
+    public void setBiayaPengemasan(double biayaPengemasan) {
+        this.biayaPengemasan = biayaPengemasan;
     } 
+
+    public void setAlamat(String alamat) {
+        this.alamat = alamat;
+    }
+
+    public void setJenisAmbil(String jenisAmbil) {
+        this.jenisAmbil = jenisAmbil;
+    }
+
+    public void setOngkir(double ongkir) {
+        this.ongkir = ongkir;
+    }
+
+    public void setMetodePembayaran(String metodePembayaran) {
+        this.metodePembayaran = metodePembayaran;
+    }
+    
+    public void setNoPesanan(String noPesanan) {
+        this.noPesanan = noPesanan;
+    }
+
 
     //getter   
     public String getNoPesanan() { return noPesanan; }
@@ -79,6 +119,36 @@ public class Pesanan {
         return sb.toString();
     }
 
+    public void addItem(ItemKeranjang newItem) {
+       if (this.items == null) {
+           this.items = new ArrayList<>();
+       }
+
+       for (ItemKeranjang item : items) {
+           if (item.getObat().getKode().equals(newItem.getObat().getKode())) {
+               item.setJumlah(item.getJumlah() + newItem.getJumlah());
+               return;
+           }
+       }
+
+       this.items.add(newItem);
+    }
+
+    public void removeItem(String kodeObat) {
+        if (this.items != null) {
+            Iterator<ItemKeranjang> iterator = items.iterator();
+
+            while (iterator.hasNext()) {
+                ItemKeranjang item = iterator.next(); //ambil item saat ini
+
+                // cek apakah kode obat cocok
+                if (item.getObat().getKode().equals(kodeObat)) {
+                    iterator.remove(); //menghapus item yang saat ini ditunjuk oleh iterator
+                    return; //keluar setelah menghapus item
+                }
+            }
+        }
+    }
 
 }
 

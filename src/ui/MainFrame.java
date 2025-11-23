@@ -51,7 +51,7 @@ public class MainFrame extends JFrame{
         // 3. Pengaturan JFrame
         add(mainPanel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(530, 400);
+        setSize(600, 400);
         setLocationRelativeTo(null); // muncul di tengah layar
         // setVisible(true); //biasanya dipanggil paling akhir di Main Java
 

@@ -1,7 +1,10 @@
+
 import java.awt.Color;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import ui.MainFrame;
+import ui.LoginFrame;
+import javax.swing.SwingUtilities;
 
 public class Main {
 
@@ -9,6 +12,7 @@ public class Main {
     public static final Color WARNA_HEADER = new Color(30, 90, 80); 
 
     public static void main(String[] args) {
+
    
         // Tambahkan di Main.java, sebelum MainFrame dibuat
         try {
@@ -32,6 +36,10 @@ public class Main {
 
                 
             }
+        }); 
+
+        SwingUtilities.invokeLater(() -> {
+            new LoginFrame().setVisible(true);
         });
     }
 }

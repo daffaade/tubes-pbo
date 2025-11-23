@@ -1,5 +1,8 @@
 package ui;
 
+import model.ItemKeranjang;
+import model.Pesanan;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -14,8 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import model.ItemKeranjang;
-import model.Pesanan;
+
 
 public class KeranjangPanel extends JPanel {
     private MainFrame parentFrame;
@@ -28,7 +30,7 @@ public class KeranjangPanel extends JPanel {
     private JButton checkoutButton;
 
     public KeranjangPanel (MainFrame parent, Pesanan pesananAktif) {
-        this.parentFrame = parent; // menyimpan referensi ke MainFrame
+        this.parentFrame = parent;
         this.pesananSekarang = pesananAktif;
         setLayout(new BorderLayout(10, 10));
 
@@ -37,24 +39,20 @@ public class KeranjangPanel extends JPanel {
         modelTabel = new DefaultTableModel(namaKolom, 0) {
             @Override
             public boolean isCellEditable(int baris, int kolom) {
-                // Kolom "Jumlah" berada di indeks 3 (Kode=0, Nama=1, Harga=2, Jumlah=3, Subtotal=4)
-                 // Kita kunci semua kolom KECUALI kolom Jumlah (indeks 3)
-                return kolom == 3; // Semua sel tidak dapat diedit
+                return kolom == 3;
             }
         };
         
         tabelKeranjang = new JTable(modelTabel);
         tabelKeranjang.setShowGrid(true);
-        tabelKeranjang.setGridColor(Color.LIGHT_GRAY); // Gunakan warna abu-abu muda
-        tabelKeranjang.setIntercellSpacing(new Dimension(1, 1)); // Memastikan jarak antar sel
+        tabelKeranjang.setGridColor(Color.LIGHT_GRAY); 
+        tabelKeranjang.setIntercellSpacing(new Dimension(1, 1));
         JScrollPane scrollPane = new JScrollPane(tabelKeranjang);
         add(scrollPane, BorderLayout.CENTER);
            
-        // 2. Inisalisasi Footer
         totalLabel = new JLabel("Total Belanja: Rp 0.00");
         totalLabel.setFont(new Font("SansSerif", Font.BOLD, 13));
 
-        // 3. Panel Tombol Aksi
         JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton backButton = new JButton("<< Kembali Belanja");
         backButton.setBackground(new Color(30, 90, 80));
@@ -91,16 +89,15 @@ public class KeranjangPanel extends JPanel {
 
         add(actionPanel, BorderLayout.SOUTH);
 
-        // 4. Memuat Data & Listeners
+        //Memuat Data
         loadKeranjangData();
         
-        // --- 5. Tambahkan Event Listeners (Logika Klik) ---
+        //tambahkan Event Listeners (Klik)
         addListeners();
     }
 
-    // === Metode Controller (Logika)
     private void loadKeranjangData() {
-        modelTabel.setRowCount(0); // Bersihkan baris lama
+        modelTabel.setRowCount(0);
         if (pesananSekarang.getItems() != null) {
             for (ItemKeranjang item : pesananSekarang.getItems()){
                 Object[] rowData = {
@@ -114,12 +111,11 @@ public class KeranjangPanel extends JPanel {
             }
         }
 
-        //Update Total
         totalLabel.setText(String.format("Total Belanja: Rp %.2f", pesananSekarang.getTotalObat()));
     }
 
     private void addListeners() {
-        // Hapus Item
+        //hapus Item
         removeButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -127,18 +123,15 @@ public class KeranjangPanel extends JPanel {
             }
         });
 
-        // Checkout Item
+        //checkout Item
         checkoutButton.addActionListener(new java.awt.event.ActionListener() {
         @Override
         public void actionPerformed(java.awt.event.ActionEvent e) {
-        // Logika di sini akan memanggil MainFrame untuk pindah ke CheckoutPanel
-        // Contoh: parentFrame.changePanel(new CheckoutPanel(currentPesanan));
-        // Cek apakah keranjang kosong
             if (pesananSekarang.getItems().isEmpty()) {
                 JOptionPane.showMessageDialog(KeranjangPanel.this, "Keranjang Anda kosong.", "Peringatan", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            // Panggil navigasi ke MainFrame
+
             parentFrame.goToCheckoutPanel();
             }
         });
@@ -151,23 +144,20 @@ public class KeranjangPanel extends JPanel {
             return;
         }
 
-        // Ambil Kode Obat dari kolom pertama
+        //ambil kode obat dr kolom pertama
         String kodeObat = (String) modelTabel.getValueAt(selectedRow, 0);
 
-        // Panggil metode removeItem dari Model Pesanan
         pesananSekarang.removeItem(kodeObat);
         
-        // Refresh tampilan
         loadKeranjangData();
         JOptionPane.showMessageDialog(this, "Item berhasil dihapus dari keranjang.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void refreshPanel(Pesanan pesananTerbaru) {
-    this.pesananSekarang = pesananTerbaru; // Ganti Pesanan lama dengan yang baru (aktif)
-    loadKeranjangData(); // Muat ulang data ke tabel
+    this.pesananSekarang = pesananTerbaru; 
+    loadKeranjangData();
     }
     
-    // Tambahkan metode ini di BeliObatPanel atau KeranjangPanel:
     private String formatRupiah(double amount) {
         NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("in", "ID")); // Locale Indonesia
         return nf.format(amount).replace("Rp", "Rp "); // Menambahkan spasi setelah Rp (opsional)

@@ -23,19 +23,18 @@ import java.awt.Color;
 public class PetaPanel extends JDialog {
     private JTable tabelLokasi;
     private DefaultTableModel modelTabel;
-    private Peta lokasiTerpilih = null; //output yang diambil
+    private Peta lokasiTerpilih = null;
 
     public PetaPanel(Frame parent) {
-        // JDialog modal, memblokir interaksi dengan parent frame sampai ditutup
         super(parent, "Pilih Lokasi Pengiriman", true); 
         setLayout(new BorderLayout(10, 10));
 
-        // 1. Inisisalisasi Tabel
+        //tabel lokasi
         String[] columnNames = {"Nama Lokasi", "Jarak (KM)"};
         modelTabel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Tabel tidak bisa diedit
+                return false;
             }
         };
 
@@ -45,10 +44,8 @@ public class PetaPanel extends JDialog {
         JScrollPane scrollPane = new JScrollPane(tabelLokasi);
         add(scrollPane, BorderLayout.CENTER);
 
-        // 2. Memuat Data
         loadDataLokasi();
 
-        // 3. Listener klik Ganda (Double Click)
         tabelLokasi.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -58,7 +55,7 @@ public class PetaPanel extends JDialog {
             }
         });
 
-        // 4. Tombol OK
+        //tombol ok
         JButton okButton = new JButton("Pilih Lokasi Ini");
         okButton.setBackground(Main.WARNA_HEADER); 
         okButton.setForeground(Color.WHITE);
@@ -101,11 +98,7 @@ public class PetaPanel extends JDialog {
             return;
         }
 
-        // Dapatkan objek peta yang dipilih
         String namaLokasi = (String) modelTabel.getValueAt(selectedRow, 0);
-        //memastikan casting ke Integer dan uboxing ke int
-        // ui/PetaPanel.java (GANTI baris di dalam private void pilihLokasi())
-        // Pastikan data yang dibaca adalah tipe angka (Integer/Double) sebelum dikonversi ke int
         Object jarakObj = modelTabel.getValueAt(selectedRow, 1);
         int jarak;
 
@@ -114,7 +107,6 @@ public class PetaPanel extends JDialog {
         } else if (jarakObj instanceof Double) {
             jarak = ((Double) jarakObj).intValue();
         } else {
-            // Jika tipe data String (terburuk), gunakan:
             try {
                 jarak = Integer.parseInt(jarakObj.toString());
             } catch (NumberFormatException ex) {
@@ -125,13 +117,10 @@ public class PetaPanel extends JDialog {
         
         this.lokasiTerpilih = new Peta(namaLokasi, jarak);
         
-        // Tutup Dialog
+        //tutup lokasi panel
         dispose(); 
     }
 
-    /**
-     * Metode untuk memanggil dan mendapatkan hasil pemilihan lokasi.
-     */
     public Peta getLokasiTerpilih() {
         return lokasiTerpilih;
     }

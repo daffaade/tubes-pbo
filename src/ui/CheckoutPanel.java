@@ -35,7 +35,7 @@ public class CheckoutPanel extends JPanel {
         setLayout(new BorderLayout(15, 15));
         
         //Panel Formulir & Detail Biaya
-        JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
+        JPanel centerPanel = new JPanel(new GridLayout(1, 2, 20, 10));
         centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
 
@@ -85,8 +85,6 @@ public class CheckoutPanel extends JPanel {
         inputPanel.add(new JLabel("3. Pilih Metode Pembayaran:"));
         pembayaranCombo = new JComboBox<>(new String[]{"Transfer Bank", "QRIS", "E-Wallet"});
         inputPanel.add(pembayaranCombo);
-        
-        centerPanel.add(inputPanel);
 
         //Rincian Biaya (sblh kanan)
         JPanel detailPanel = new JPanel(new GridLayout(5, 2, 5, 5));
@@ -111,9 +109,9 @@ public class CheckoutPanel extends JPanel {
         detailPanel.add(new JLabel("TOTAL AKHIR:"));
         detailPanel.add(totalBayarLabel);
         
-
-        centerPanel.add(detailPanel, BorderLayout.NORTH);
-        centerPanel.add(inputPanel, BorderLayout.CENTER);
+        centerPanel.add(inputPanel);
+        centerPanel.add(detailPanel);
+    
         add(centerPanel, BorderLayout.CENTER);
 
         //selesaikan pesanan (sblh kanan bwh)
@@ -135,8 +133,8 @@ public class CheckoutPanel extends JPanel {
         });
 
         completeOrderButton = new JButton("SELESAIKAN PESANAN & BAYAR");
-        completeOrderButton.setFont(new Font("SansSerif", Font.BOLD, 14));
-        completeOrderButton.setPreferredSize(new Dimension(250, 40));
+        completeOrderButton.setFont(new Font("SansSerif", Font.BOLD, 13));
+        completeOrderButton.setPreferredSize(new Dimension(250, 30));
 
         completeOrderButton.setBackground(new Color(46, 139, 87));
         completeOrderButton.setForeground(Color.WHITE);
@@ -187,7 +185,7 @@ public class CheckoutPanel extends JPanel {
         return nf.format(amount).replace("Rp", "Rp ");
     }
 
-    private void updateBiayaPengiriman() {
+    public void updateBiayaPengiriman() {
         String jenis = (String) jenisAmbilCombo.getSelectedItem();
         double ongkirBaru = 0.0;
         double biayaKemasanBaru = 0.0;
@@ -234,7 +232,6 @@ public class CheckoutPanel extends JPanel {
 
         // Perhitungan Total Bayar (Total Obat + Ongkir + Kemasan)
         double totalAkhir = finalPesanan.getTotalObat() + finalPesanan.getOngkir() + finalPesanan.getBiayaPengemasan();
-        finalPesanan.setTotalBayar(totalAkhir);
         totalBayarLabel.setText(formatRupiah(totalAkhir));
     }
 
@@ -288,12 +285,11 @@ public class CheckoutPanel extends JPanel {
         finalPesanan.getItems().clear();
         finalPesanan.setOngkir(0.0);
         finalPesanan.setBiayaPengemasan(0.0);
-        finalPesanan.setTotalBayar(0.0);
 
         //Konfirmasi
         JOptionPane.showMessageDialog(this, 
             "Pesanan berhasil diselesaikan!\nNomor Pesanan: " + noPesananFinal + 
-            "\nTotal Bayar: Rp " + formatRupiah(totalBayarFinal) +
+            "\nTotal Bayar: " + formatRupiah(totalBayarFinal) +
             "\nMohon tunggu konfirmasi lebih lanjut.", 
             "Pesanan Sukses", JOptionPane.INFORMATION_MESSAGE);
 

@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Locale;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -16,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -42,6 +44,25 @@ public class KeranjangPanel extends JPanel {
                 return kolom == 3;
             }
         };
+
+        modelTabel.addTableModelListener(new javax.swing.event.TableModelListener() {
+        @Override
+        public void tableChanged(TableModelEvent e) {
+            // Hanya peduli jika ada data yang berubah (UPDATE)
+            if (e.getType() == TableModelEvent.UPDATE) {
+                int row = e.getFirstRow();
+                int column = e.getColumn();
+                
+                // Kolom 0: Kode, 1: Nama Obat, 2: Harga, 3: Jumlah, 4: Subtotal
+                final int JUMLAH_COLUMN_INDEX = 3;
+                
+                if (column == JUMLAH_COLUMN_INDEX) {
+                    recalculateRowAndTotal(row); // Panggil metode kalkulasi
+                }
+            }
+        }
+    });
+
         
         tabelKeranjang = new JTable(modelTabel);
         tabelKeranjang.setShowGrid(true);
@@ -59,7 +80,7 @@ public class KeranjangPanel extends JPanel {
         backButton.setForeground(Color.WHITE);
         backButton.setOpaque(true);
         backButton.setBorderPainted(false);
-        backButton.setPreferredSize(new Dimension(120, 20));
+        backButton.setPreferredSize(new Dimension(140, 20));
 
         backButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -80,7 +101,7 @@ public class KeranjangPanel extends JPanel {
         checkoutButton.setForeground(Color.WHITE);
         checkoutButton.setOpaque(true);
         checkoutButton.setBorderPainted(false);
-        checkoutButton.setPreferredSize(new Dimension(120, 20));
+        checkoutButton.setPreferredSize(new Dimension(140, 20));
 
         actionPanel.add(backButton);
         actionPanel.add(totalLabel);
@@ -96,6 +117,7 @@ public class KeranjangPanel extends JPanel {
         addListeners();
     }
 
+    
     private void loadKeranjangData() {
         modelTabel.setRowCount(0);
         if (pesananSekarang.getItems() != null) {
@@ -111,7 +133,7 @@ public class KeranjangPanel extends JPanel {
             }
         }
 
-        totalLabel.setText(String.format("Total Belanja: Rp %.2f", pesananSekarang.getTotalObat()));
+        totalLabel.setText("Total Belanja: " + formatRupiah(pesananSekarang.getTotalObat()));
     }
 
     private void addListeners() {
@@ -132,6 +154,7 @@ public class KeranjangPanel extends JPanel {
                 return;
             }
 
+            updateTotalBelanjaUI();
             parentFrame.goToCheckoutPanel();
             }
         });
@@ -161,5 +184,83 @@ public class KeranjangPanel extends JPanel {
     private String formatRupiah(double amount) {
         NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("in", "ID")); // Locale Indonesia
         return nf.format(amount).replace("Rp", "Rp "); // Menambahkan spasi setelah Rp (opsional)
+    }
+
+    private void recalculateRowAndTotal(int row) { // Menghapus parameter model dan subtotalColIndex agar lebih bersih
+    try {
+        final int JUMLAH_COLUMN_INDEX = 3;
+        final int SUBTOTAL_COLUMN_INDEX = 4;
+        
+        String kodeObat = (String) modelTabel.getValueAt(row, 0); 
+        String hargaStr = (String) modelTabel.getValueAt(row, 2); 
+        
+        //cek validitas input jumlah
+        int jumlahBaru;
+        try {
+            jumlahBaru = Integer.parseInt(modelTabel.getValueAt(row, JUMLAH_COLUMN_INDEX).toString());
+            if (jumlahBaru <= 0) {
+                JOptionPane.showMessageDialog(this, "Jumlah harus lebih dari 0.", "Error Input", JOptionPane.ERROR_MESSAGE);
+                throw new NumberFormatException(); 
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Jumlah harus berupa angka yang valid dan positif.", "Error Input", JOptionPane.ERROR_MESSAGE);
+            loadKeranjangData(); 
+            return;
+        }
+
+        //ambil Harga
+        double hargaSatuan = parseRupiahToDouble(hargaStr); // Menggunakan double karena formatRupiah() menggunakan double
+        
+        //hitung Subtotal Baru
+        double subtotalBaru = hargaSatuan * jumlahBaru;
+        
+        //Update Data di Pesanan
+        pesananSekarang.updateJumlahItem(kodeObat, jumlahBaru, subtotalBaru); 
+        
+        //Update Tampilan Subtotal di Tabel
+        String subtotalStr = formatRupiah(subtotalBaru); 
+        modelTabel.setValueAt(subtotalStr, row, SUBTOTAL_COLUMN_INDEX);
+        
+        //hitung ulang total keselurhan di UI
+        updateTotalBelanjaUI();
+        
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat mengupdate keranjang: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            loadKeranjangData();
+        }
+    }
+
+
+    private void updateTotalBelanjaUI() {
+        //perbarui total di Pesanan
+        double newTotalObat = 0.0;
+        for(ItemKeranjang item : pesananSekarang.getItems()) {
+            newTotalObat += item.getSubtotal();
+        }
+        
+        //perbarui di Label UI
+        totalLabel.setText("Total Belanja: " + formatRupiah(newTotalObat));
+    
+        if (parentFrame.getCheckoutPanel() != null) {
+            parentFrame.getCheckoutPanel().updateBiayaPengiriman();
+        }
+    }
+
+    // Helper untuk parsing
+    private double parseRupiahToDouble(String rupiah) {
+        try {
+        //hapus simbol mata uang dan spasi
+        String cleanedString = rupiah.replace("Rp", "").trim();
+        //ganti pemisah ribuan (titik) menjadi string kosong
+        cleanedString = cleanedString.replace(".", ""); 
+        //ganti pemisah desimal (koma) menjadi titik
+        cleanedString = cleanedString.replace(",", "."); 
+        //konversi ke double
+        return Double.parseDouble(cleanedString);
+
+        } catch (NumberFormatException e) {
+            // Jika parsing gagal (misal format tidak lengkap), kembali ke 0
+            return 0.0; 
+        }
     }
 }

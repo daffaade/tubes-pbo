@@ -1,123 +1,63 @@
 package ui;
 
-import data.DataManager;
-import model.Peta;
-
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableModel;
-import java.awt.Color;
-
+import model.Peta;
 
 public class PetaPanel extends JDialog {
-    private JTable tabelLokasi;
-    private DefaultTableModel modelTabel;
+
     private Peta lokasiTerpilih = null;
+    private MapDrawingPanel drawingPanel;
 
     public PetaPanel(Frame parent) {
         super(parent, "Pilih Lokasi Pengiriman", true); 
         setLayout(new BorderLayout(10, 10));
 
-        //tabel lokasi
-        String[] columnNames = {"Nama Lokasi", "Jarak (KM)"};
-        modelTabel = new DefaultTableModel(columnNames, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-
-        tabelLokasi = new JTable(modelTabel);
-        tabelLokasi.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        drawingPanel = new MapDrawingPanel(this); 
+        drawingPanel.setPreferredSize(new Dimension(500, 450));
         
-        JScrollPane scrollPane = new JScrollPane(tabelLokasi);
+        JScrollPane scrollPane = new JScrollPane(drawingPanel);
         add(scrollPane, BorderLayout.CENTER);
 
-        loadDataLokasi();
-
-        tabelLokasi.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    pilihLokasi();
-                }
-            }
-        });
-
-        //tombol ok
         JButton okButton = new JButton("Pilih Lokasi Ini");
-        okButton.setBackground(Main.WARNA_HEADER); 
+        okButton.setBackground(new Color(30, 90, 80)); 
         okButton.setForeground(Color.WHITE);
         okButton.setOpaque(true);
         okButton.setBorderPainted(false);
 
-        okButton.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent e) {
-                pilihLokasi();
-            }
-        });
+        okButton.addActionListener(e -> pilihLokasi());
         
         JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         southPanel.add(okButton);
         add(southPanel, BorderLayout.SOUTH);
 
-        // Pengaturan JDialog
-        setSize(400, 300);
+        pack(); //agar sesuai dengan preferred size drawingPanel
         setLocationRelativeTo(parent);
-    
     }
-
-    private void loadDataLokasi() {
-        modelTabel.setRowCount(0);
-        List<Peta> daftarLokasi = DataManager.getInstance().getLokasi();
-        for (Peta loc : daftarLokasi) {
-            Object[] rowData = {
-                loc.getNamaLokasi(),
-                loc.getJarak()
-            };
-            modelTabel.addRow(rowData);
-        }
+    
+    //set dari MapDrawingPanel
+    public void setLokasiTerpilih(Peta lokasi) {
+        this.lokasiTerpilih = lokasi;
     }
     
     private void pilihLokasi() {
-        int selectedRow = tabelLokasi.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Pilih salah satu lokasi terlebih dahulu.", "Peringatan", JOptionPane.WARNING_MESSAGE);
+        //ambil lokasi terpilih dari drawingPanel
+        lokasiTerpilih = drawingPanel.getLokasiTerpilih();
+        
+        if (lokasiTerpilih == null) {
+            JOptionPane.showMessageDialog(this, "Pilih salah satu lokasi pada peta terlebih dahulu.", "Peringatan", JOptionPane.WARNING_MESSAGE);
             return;
         }
-
-        String namaLokasi = (String) modelTabel.getValueAt(selectedRow, 0);
-        Object jarakObj = modelTabel.getValueAt(selectedRow, 1);
-        int jarak;
-
-        if (jarakObj instanceof Integer) {
-            jarak = (Integer) jarakObj;
-        } else if (jarakObj instanceof Double) {
-            jarak = ((Double) jarakObj).intValue();
-        } else {
-            try {
-                jarak = Integer.parseInt(jarakObj.toString());
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Data jarak tidak valid!", "Error Data", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-        }
         
-        this.lokasiTerpilih = new Peta(namaLokasi, jarak);
-        
-        //tutup lokasi panel
+        //tutup dialog
         dispose(); 
     }
 

@@ -163,6 +163,8 @@ public class BeliObatPanel extends JPanel{
         });
     }
 
+
+
     private void performSearch() {
         String keywordLower = searchField.getText().toLowerCase();
         
@@ -182,7 +184,7 @@ public class BeliObatPanel extends JPanel{
         }
         loadTableData(hasilCari);
     }
-    
+
     private void addItemToCart() {
         int selectedRow = obatTabel.getSelectedRow();
         

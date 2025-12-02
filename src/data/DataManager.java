@@ -193,12 +193,14 @@ public class DataManager {
     public static List<Peta> getLokasi() {
         List<Peta> lokasiList = new ArrayList<>();
 
-        lokasiList.add(new Peta("Jebres", 5));
-        lokasiList.add(new Peta("Pasar Kliwon", 3));
-        lokasiList.add(new Peta("Rumah Sakit Muwardi", 6));
-        lokasiList.add(new Peta("Pasar Gede", 8));
+        lokasiList.add(new Peta("Jebres", 10));
+        lokasiList.add(new Peta("RS. Muwardi", 5));
+        lokasiList.add(new Peta("Slamet Riyadi", 8));
         lokasiList.add(new Peta("Alun-alun", 6));
-        lokasiList.add(new Peta("Slamet Riyadi", 7));
+        lokasiList.add(new Peta("Pasar Kliwon", 8));
+        lokasiList.add(new Peta("Pasar Gede", 3));
+        
+
 
 
         return lokasiList;

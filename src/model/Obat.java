@@ -1,7 +1,5 @@
 package model;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Locale;
 
 
@@ -51,11 +49,18 @@ public class Obat {
     public static Obat fromString(String str) {
         String[] parts = str.split("\\|");
 
-        
+        if (parts.length < 5) {
+            System.err.println("Format data obat tidak lengkap: " + str);
+            return new Obat("ERR", "Data Error", 0.0, 0, "Error");
+        }
+
         try {
-            // Gunakan NumberFormat untuk membaca angka yang mungkin punya koma atau titik
-            NumberFormat nf = NumberFormat.getInstance(Locale.US); 
-            double harga = nf.parse(parts[2]).doubleValue(); // Gunakan NumberFormat untuk parsing
+            String hargaString = parts[2].trim(); 
+            
+            // Perbaikan agar dapat membaca koma (,) atau titik (.)
+            hargaString = hargaString.replace(',', '.'); 
+            
+            double harga = Double.parseDouble(hargaString);
             
             return new Obat(parts[0], 
                             parts[1], 
@@ -63,7 +68,7 @@ public class Obat {
                             Integer.parseInt(parts[3]), 
                             parts[4]);
                             
-        } catch (ParseException e) {
+        } catch (NumberFormatException e) {
             System.err.println("Gagal membaca format angka di baris: " + str);
             // Pilihan: return null atau lemparkan exception lagi
             return new Obat(parts[0], parts[1], 0.0, 0, parts[4]); // Fallback aman jika parsing harga gagal

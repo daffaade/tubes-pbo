@@ -10,21 +10,9 @@ public class Pesanan {
     private String alamat;
     private double ongkir;
     private double biayaPengemasan;
-    private String metodePembayaran; //cod atau online 
+    private String metodePembayaran; // online 
     private Date tanggal;
-    private double totalBayar;
-
-    public Pesanan(String noPesanan, List<ItemKeranjang> items, String jenisAmbil, String alamat,
-                   double jarak, double biayaPengemasan, String metodePembayaran, Date tanggal) {
-        this.noPesanan = noPesanan;
-        this.items = items;
-        this.jenisAmbil = jenisAmbil;
-        this.alamat = alamat;
-        this.ongkir = jarak * 3000; // hitunfg ongkir berdasarkan jarak
-        this.biayaPengemasan = biayaPengemasan;
-        this.metodePembayaran = metodePembayaran;
-        this.tanggal = new Date();        
-    }
+    private double totalObat;
 
     public Pesanan(String noPesanan) {
         this.noPesanan = noPesanan;
@@ -33,29 +21,22 @@ public class Pesanan {
         this.alamat = "";
         this.ongkir = 0;
         this.biayaPengemasan = 0;
-        this.metodePembayaran = "cod"; // default
+        this.metodePembayaran = "online"; // default
         this.tanggal = new Date();
     }
-    
-    // menghitung total obat dalam pesanan
-    public double getTotalObat() {
-    double total = 0;
-        if (items != null) {
-            for (ItemKeranjang item : items) {
-                total = total + item.getSubtotal();
-            }
-        }
-        return total;
-    }
 
-    // menghitung jumlah total 
     public double getTotalBayar() {
-       return getTotalObat() + ongkir + biayaPengemasan; 
+        return getTotalObat() + ongkir + biayaPengemasan;
     }
 
-    public void setTotalBayar(double totalBayar) {
-        this.totalBayar = totalBayar;
+    public double getTotalObat() { 
+        double total = 0.0;
+        for (ItemKeranjang item : items) {
+            total += item.getSubtotal();
+        }
+        return total; 
     }
+
 
     //setter
     public void setBiayaPengemasan(double biayaPengemasan) {
@@ -127,6 +108,9 @@ public class Pesanan {
        for (ItemKeranjang item : items) {
            if (item.getObat().getKode().equals(newItem.getObat().getKode())) {
                item.setJumlah(item.getJumlah() + newItem.getJumlah());
+
+               double newSubtotal = item.getObat().getHarga() * item.getJumlah();
+               item.setSubtotal(newSubtotal);
                return;
            }
        }
@@ -150,5 +134,16 @@ public class Pesanan {
         }
     }
 
+    // Metode untuk mengupdate ItemKeranjang ketika Jumlah diubah di tabel
+    public void updateJumlahItem(String kodeObat, int jumlahBaru, double subtotalBaru) {
+        for (ItemKeranjang item : items) { // items adalah List<ItemKeranjang> di Pesanan
+            if (item.getObat().getKode().equals(kodeObat)) {
+                item.setJumlah(jumlahBaru);
+                item.setSubtotal(subtotalBaru);
+                
+                return;
+            }
+        }
+    }
 }
 

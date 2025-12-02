@@ -26,7 +26,7 @@ public class Obat {
     
 
 // setter
-    public void setstok(int stok) {
+    public void setStok(int stok) {
     this.stok = stok;
     }
 

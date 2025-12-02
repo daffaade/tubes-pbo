@@ -190,7 +190,7 @@ public class DataManager {
         return daftarPesanan;
     }
 
-    public static List<Peta> getLokasi() {
+    public List<Peta> getLokasi() {
         List<Peta> lokasiList = new ArrayList<>();
 
         lokasiList.add(new Peta("Jebres", 10));

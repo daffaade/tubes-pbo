@@ -1,9 +1,9 @@
 package ui;
 
 import data.DataManager;
-import model.Users;
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
+import model.Users;
 
 public class LoginFrame extends JFrame {
     private DataManager dataManager;
@@ -160,7 +160,7 @@ public class LoginFrame extends JFrame {
                 JOptionPane.INFORMATION_MESSAGE);
             
             // Buka main frame
-            MainFrame mainFrame = new MainFrame();
+            MainFrame mainFrame = new MainFrame("Sistem Apotek");
             mainFrame.setVisible(true);
             
             // Tutup login frame

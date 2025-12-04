@@ -5,11 +5,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
 import model.Peta;
 
 public class PetaPanel extends JDialog {
@@ -17,8 +19,8 @@ public class PetaPanel extends JDialog {
     private Peta lokasiTerpilih = null;
     private MapDrawingPanel drawingPanel;
 
-    public PetaPanel(Frame parent) {
-        super(parent, "Pilih Lokasi Pengiriman", true); 
+    public PetaPanel(Frame main) {
+        super(main, "Pilih Lokasi Pengiriman", true); 
         setLayout(new BorderLayout(10, 10));
 
         drawingPanel = new MapDrawingPanel(this); 
@@ -39,17 +41,17 @@ public class PetaPanel extends JDialog {
         southPanel.add(okButton);
         add(southPanel, BorderLayout.SOUTH);
 
-        pack(); //agar sesuai dengan preferred size drawingPanel
-        setLocationRelativeTo(parent);
+        pack(); // Agar sesuai dengan preferred size drawingPanel
+        setLocationRelativeTo(main);
     }
     
-    //set dari MapDrawingPanel
+    // Set dari MapDrawingPanel
     public void setLokasiTerpilih(Peta lokasi) {
         this.lokasiTerpilih = lokasi;
     }
     
     private void pilihLokasi() {
-        //ambil lokasi terpilih dari drawingPanel
+        // Ambil lokasi terpilih dari drawingPanel
         lokasiTerpilih = drawingPanel.getLokasiTerpilih();
         
         if (lokasiTerpilih == null) {
@@ -57,7 +59,7 @@ public class PetaPanel extends JDialog {
             return;
         }
         
-        //tutup dialog
+        // Tutup dialog
         dispose(); 
     }
 

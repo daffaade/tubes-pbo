@@ -2,8 +2,8 @@ package model;
 
 import java.util.Locale;
 
-
 public class Obat {
+
     private String kode;
     private String nama;
     private double harga;
@@ -17,61 +17,71 @@ public class Obat {
         this.stok = stok;
         this.kategori = kategori;
     }
-// getter
-    public String getKode() {return kode;}
-    public String getNama() {return nama;}
-    public double getHarga() {return harga;}
-    public int getStok() {return stok;}
-    public String getKategori() {return kategori;}
-    
 
-// setter
+    public String getKode() {
+        return kode;
+    }
+
+    public String getNama() {
+        return nama;
+    }
+    
+    public double getHarga() {
+        return harga;
+    }
+    
+    public int getStok() {
+        return stok;
+    }
+    
+    public String getKategori() {
+        return kategori;
+    }
+    
     public void setStok(int stok) {
-    this.stok = stok;
+        this.stok = stok;
     }
 
     public void kurangiStok(int jumlah) {
+
         if (jumlah <= stok) {
             stok -= jumlah;
         } else {
             System.out.println("Stok tidak cukup!");
         }
+
     }
 
-
     @Override
-    // menubah objek obat menjadi string 
     public String toString() {
         return String.format(Locale.US, "%s|%s|%.2f|%d|%s", kode, nama, harga, stok, kategori);
     }
 
-    // mengubah string kembali menjadi objek obat
     public static Obat fromString(String str) {
-        String[] parts = str.split("\\|");
+        
+        String[] data = str.split("\\|");
 
-        if (parts.length < 5) {
+        if (data.length < 5) {
             System.err.println("Format data obat tidak lengkap: " + str);
             return new Obat("ERR", "Data Error", 0.0, 0, "Error");
         }
 
         try {
-            String hargaString = parts[2].trim(); 
+
+            String hargaString = data[2].trim(); 
             
-            // Perbaikan agar dapat membaca koma (,) atau titik (.)
             hargaString = hargaString.replace(',', '.'); 
             
             double harga = Double.parseDouble(hargaString);
             
-            return new Obat(parts[0], 
-                            parts[1], 
-                            harga, // Sudah benar dibaca
-                            Integer.parseInt(parts[3]), 
-                            parts[4]);
+            return new Obat(data[0], data[1], harga, Integer.parseInt(data[3]), data[4]);
                             
         } catch (NumberFormatException e) {
+
             System.err.println("Gagal membaca format angka di baris: " + str);
-            // Pilihan: return null atau lemparkan exception lagi
-            return new Obat(parts[0], parts[1], 0.0, 0, parts[4]); // Fallback aman jika parsing harga gagal
+            return new Obat(data[0], data[1], 0.0, 0, data[4]);
         }
+
     }
+
 }

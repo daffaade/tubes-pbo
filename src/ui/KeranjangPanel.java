@@ -3,14 +3,15 @@ package ui;
 import model.ItemKeranjang;
 import model.Pesanan;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.Locale;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -20,9 +21,8 @@ import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 
-
 public class KeranjangPanel extends JPanel {
-    private MainFrame parentFrame;
+    private MainFrame mainFrame;
     private Pesanan pesananSekarang;
     private JTable tabelKeranjang;
     private DefaultTableModel modelTabel;
@@ -31,8 +31,8 @@ public class KeranjangPanel extends JPanel {
     private JButton removeButton;
     private JButton checkoutButton;
 
-    public KeranjangPanel (MainFrame parent, Pesanan pesananAktif) {
-        this.parentFrame = parent;
+    public KeranjangPanel (MainFrame mainFrame, Pesanan pesananAktif) {
+        this.mainFrame = mainFrame;
         this.pesananSekarang = pesananAktif;
         setLayout(new BorderLayout(10, 10));
 
@@ -48,7 +48,7 @@ public class KeranjangPanel extends JPanel {
         modelTabel.addTableModelListener(new javax.swing.event.TableModelListener() {
         @Override
         public void tableChanged(TableModelEvent e) {
-            // Hanya peduli jika ada data yang berubah (UPDATE)
+
             if (e.getType() == TableModelEvent.UPDATE) {
                 int row = e.getFirstRow();
                 int column = e.getColumn();
@@ -57,13 +57,12 @@ public class KeranjangPanel extends JPanel {
                 final int JUMLAH_COLUMN_INDEX = 3;
                 
                 if (column == JUMLAH_COLUMN_INDEX) {
-                    recalculateRowAndTotal(row); // Panggil metode kalkulasi
+                    recalculateRowAndTotal(row);
                 }
             }
         }
     });
 
-        
         tabelKeranjang = new JTable(modelTabel);
         tabelKeranjang.setShowGrid(true);
         tabelKeranjang.setGridColor(Color.LIGHT_GRAY); 
@@ -85,7 +84,7 @@ public class KeranjangPanel extends JPanel {
         backButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                parentFrame.showPanel(MainFrame.BeliObat_Panel);
+                mainFrame.showPanel(MainFrame.BELI_OBAT);
             }
         });
        
@@ -110,10 +109,8 @@ public class KeranjangPanel extends JPanel {
 
         add(actionPanel, BorderLayout.SOUTH);
 
-        //Memuat Data
         loadKeranjangData();
         
-        //tambahkan Event Listeners (Klik)
         addListeners();
     }
 
@@ -137,7 +134,8 @@ public class KeranjangPanel extends JPanel {
     }
 
     private void addListeners() {
-        //hapus Item
+        
+        // Hapus Item
         removeButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -145,17 +143,27 @@ public class KeranjangPanel extends JPanel {
             }
         });
 
-        //checkout Item
         checkoutButton.addActionListener(new java.awt.event.ActionListener() {
-        @Override
-        public void actionPerformed(java.awt.event.ActionEvent e) {
-            if (pesananSekarang.getItems().isEmpty()) {
-                JOptionPane.showMessageDialog(KeranjangPanel.this, "Keranjang Anda kosong.", "Peringatan", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                System.out.println("=== CHECKOUT BUTTON CLICKED ===");
+                System.out.println("Items count: " + pesananSekarang.getItems().size());
+                
+                if (pesananSekarang.getItems().isEmpty()) {
+                    JOptionPane.showMessageDialog(KeranjangPanel.this, "Keranjang Anda kosong.", "Peringatan", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
 
-            updateTotalBelanjaUI();
-            parentFrame.goToCheckoutPanel();
+                System.out.println("Calling updateTotalBelanjaUI...");
+                updateTotalBelanjaUI();
+                
+                System.out.println("Calling refreshData...");
+                mainFrame.getCheckoutPanel().refreshData();
+                
+                System.out.println("Showing CHECKOUT panel...");
+                mainFrame.showPanel(MainFrame.CHECKOUT);
+                
+                System.out.println("DONE");
             }
         });
     }
@@ -167,7 +175,6 @@ public class KeranjangPanel extends JPanel {
             return;
         }
 
-        //ambil kode obat dr kolom pertama
         String kodeObat = (String) modelTabel.getValueAt(selectedRow, 0);
 
         pesananSekarang.removeItem(kodeObat);
@@ -208,20 +215,15 @@ public class KeranjangPanel extends JPanel {
             return;
         }
 
-        //ambil Harga
         double hargaSatuan = parseRupiahToDouble(hargaStr); // Menggunakan double karena formatRupiah() menggunakan double
         
-        //hitung Subtotal Baru
         double subtotalBaru = hargaSatuan * jumlahBaru;
         
-        //Update Data di Pesanan
         pesananSekarang.updateJumlahItem(kodeObat, jumlahBaru, subtotalBaru); 
         
-        //Update Tampilan Subtotal di Tabel
         String subtotalStr = formatRupiah(subtotalBaru); 
         modelTabel.setValueAt(subtotalStr, row, SUBTOTAL_COLUMN_INDEX);
         
-        //hitung ulang total keselurhan di UI
         updateTotalBelanjaUI();
         
         } catch (Exception ex) {
@@ -232,34 +234,36 @@ public class KeranjangPanel extends JPanel {
 
 
     private void updateTotalBelanjaUI() {
-        //perbarui total di Pesanan
+
         double newTotalObat = 0.0;
         for(ItemKeranjang item : pesananSekarang.getItems()) {
             newTotalObat += item.getSubtotal();
         }
         
-        //perbarui di Label UI
         totalLabel.setText("Total Belanja: " + formatRupiah(newTotalObat));
     
-        if (parentFrame.getCheckoutPanel() != null) {
-            parentFrame.getCheckoutPanel().updateBiayaPengiriman();
+        if (mainFrame.getCheckoutPanel() != null) {
+            mainFrame.getCheckoutPanel().refreshData();
         }
     }
 
-    // Helper untuk parsing
+    public void refreshData() {
+        loadKeranjangData();
+    }
+
+   
     private double parseRupiahToDouble(String rupiah) {
         try {
-        //hapus simbol mata uang dan spasi
+        
         String cleanedString = rupiah.replace("Rp", "").trim();
-        //ganti pemisah ribuan (titik) menjadi string kosong
+        
         cleanedString = cleanedString.replace(".", ""); 
-        //ganti pemisah desimal (koma) menjadi titik
+        
         cleanedString = cleanedString.replace(",", "."); 
-        //konversi ke double
+        
         return Double.parseDouble(cleanedString);
 
         } catch (NumberFormatException e) {
-            // Jika parsing gagal (misal format tidak lengkap), kembali ke 0
             return 0.0; 
         }
     }

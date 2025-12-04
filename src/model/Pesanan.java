@@ -1,27 +1,30 @@
 package model;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 
 public class Pesanan {
     private String noPesanan;
     private List<ItemKeranjang> items;
-    private String jenisAmbil; // ambil atau antar
+    private String jenisAmbil; 
     private String alamat;
     private double ongkir;
     private double biayaPengemasan;
-    private String metodePembayaran; // online 
+    private String metodePembayaran; 
     private Date tanggal;
-    private double totalObat;
 
-    public Pesanan(String noPesanan) {
+    public Pesanan(Users user) {
         this.noPesanan = noPesanan;
         this.items = new ArrayList<>();
-        this.jenisAmbil = "ambil"; // default
+        this.jenisAmbil = "ambil"; 
         this.alamat = "";
         this.ongkir = 0;
         this.biayaPengemasan = 0;
-        this.metodePembayaran = "online"; // default
+        this.metodePembayaran = "online"; 
         this.tanggal = new Date();
     }
 
@@ -37,8 +40,6 @@ public class Pesanan {
         return total; 
     }
 
-
-    //setter
     public void setBiayaPengemasan(double biayaPengemasan) {
         this.biayaPengemasan = biayaPengemasan;
     } 
@@ -63,20 +64,41 @@ public class Pesanan {
         this.noPesanan = noPesanan;
     }
 
+    public String getNoPesanan() {
+        return noPesanan; 
+    }
+    
+    public List<ItemKeranjang> getItems() {
+        return items; 
+    }
+    
+    public String getJenisAmbil() {
+        return jenisAmbil; 
+    }
+    
+    public String getAlamat() { 
+        return alamat; 
+    }
+    
+    public double getOngkir() { 
+        return ongkir; 
+    }
 
-    //getter   
-    public String getNoPesanan() { return noPesanan; }
-    public List<ItemKeranjang> getItems() { return items; }
-    public String getJenisAmbil() { return jenisAmbil; }
-    public String getAlamat() { return alamat; }
-    public double getOngkir() { return ongkir; }
-    public double getBiayaPengemasan() { return biayaPengemasan; }
-    public String getMetodeBayar() { return metodePembayaran; }
-    public Date getTanggal() { return tanggal; }
+    public double getBiayaPengemasan() { 
+        return biayaPengemasan; 
+    }
+    
+    public String getMetodeBayar() { 
+        return metodePembayaran; 
+    }
 
-// mengubah pesanan menjadi satu baris teks panjang 
+    public Date getTanggal() { 
+        return tanggal; 
+    }
+
     @Override
     public String toString() {
+        
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         StringBuilder sb = new StringBuilder();
         sb.append(noPesanan).append("|");
@@ -91,9 +113,9 @@ public class Pesanan {
 
 
         for (int i = 0; i < items.size(); i++) {
-            ItemKeranjang item = items.get(i); // ambil barang urutan ke i 
-            sb.append(item.getObat().getKode()).append(","); // ambil kode obat
-            sb.append(item.getJumlah()); // tempel jumlah barang yang dibeli
+            ItemKeranjang item = items.get(i); 
+            sb.append(item.getObat().getKode()).append(","); 
+            sb.append(item.getJumlah()); 
             if (i < items.size() - 1) sb.append(";");
         }
         
@@ -101,6 +123,7 @@ public class Pesanan {
     }
 
     public void addItem(ItemKeranjang newItem) {
+
        if (this.items == null) {
            this.items = new ArrayList<>();
        }
@@ -119,24 +142,25 @@ public class Pesanan {
     }
 
     public void removeItem(String kodeObat) {
+
         if (this.items != null) {
             Iterator<ItemKeranjang> iterator = items.iterator();
 
             while (iterator.hasNext()) {
-                ItemKeranjang item = iterator.next(); //ambil item saat ini
+                ItemKeranjang item = iterator.next();
 
-                // cek apakah kode obat cocok
                 if (item.getObat().getKode().equals(kodeObat)) {
-                    iterator.remove(); //menghapus item yang saat ini ditunjuk oleh iterator
-                    return; //keluar setelah menghapus item
+                    iterator.remove(); 
+                    return; 
                 }
+                
             }
         }
     }
 
-    // Metode untuk mengupdate ItemKeranjang ketika Jumlah diubah di tabel
     public void updateJumlahItem(String kodeObat, int jumlahBaru, double subtotalBaru) {
-        for (ItemKeranjang item : items) { // items adalah List<ItemKeranjang> di Pesanan
+
+        for (ItemKeranjang item : items) { 
             if (item.getObat().getKode().equals(kodeObat)) {
                 item.setJumlah(jumlahBaru);
                 item.setSubtotal(subtotalBaru);
@@ -146,4 +170,3 @@ public class Pesanan {
         }
     }
 }
-

@@ -1,14 +1,20 @@
 package ui;
 
 import data.DataManager;
+import model.ItemKeranjang;
+import model.Obat;
+import model.Pesanan;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import java.awt.BorderLayout;
 import java.awt.Color; 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -17,12 +23,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-import model.ItemKeranjang;
-import model.Obat;
-import model.Pesanan;
 
 public class BeliObatPanel extends JPanel{
-    private MainFrame parentFrame;
+
+    private MainFrame mainFrame;
     private JButton checkoutButton;
     private JTable obatTabel;
     private DefaultTableModel modelTabel;
@@ -36,12 +40,12 @@ public class BeliObatPanel extends JPanel{
         return pesananSekarang;
     }   
 
-    public BeliObatPanel(MainFrame parent, Pesanan pesananAktif) {
-        this.parentFrame =parent;
+    public BeliObatPanel(MainFrame mainFrame, Pesanan pesananAktif) {
+        this.mainFrame = mainFrame;
         this.pesananSekarang = pesananAktif;
         setLayout(new BorderLayout(10, 10));
 
-        // 1. Inisialisasi komponen tabel GUI Obat
+        // 1. Tabel Obat
         String[] namaKolom = {"Kode", "Nama Obat", "Harga", "Stok", "Kategori"};
         modelTabel = new DefaultTableModel(namaKolom, 0) {
             @Override
@@ -53,13 +57,13 @@ public class BeliObatPanel extends JPanel{
         obatTabel = new JTable(modelTabel);
         obatTabel.setShowGrid(true);
         obatTabel.setGridColor(Color.LIGHT_GRAY);
-        obatTabel.setIntercellSpacing(new Dimension(1, 1));
+        obatTabel.setIntercellSpacing(new Dimension(1, 3));
 
         JScrollPane scrollPane = new JScrollPane(obatTabel);
 
         add(scrollPane, BorderLayout.CENTER);
 
-        //Field dan tombol pencari
+        // Field dan tombol pencari
         searchField = new JTextField(10);
         searchButton = new JButton("Cari Obat");
         searchButton.setBackground(new Color(70, 130, 180));
@@ -68,7 +72,7 @@ public class BeliObatPanel extends JPanel{
         searchButton.setBorderPainted(false);
         searchButton.setPreferredSize(new Dimension(100, 20));
 
-        //Field dan tombol tambah ke keranjang
+        // Field dan tombol tambah ke keranjang
         quantityField = new JTextField("1", 2);//defaultnya udh ada jumlah 1
         addtoCartButton = new JButton("Tambah ke Keranjang");
         addtoCartButton.setBackground(new Color(70, 130, 180));
@@ -84,7 +88,6 @@ public class BeliObatPanel extends JPanel{
         checkoutButton.setOpaque(true);
         checkoutButton.setBorderPainted(false);
 
-        // tambahkan ke panel
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         controlPanel.add(checkoutButton);
         add(controlPanel, BorderLayout.SOUTH);
@@ -100,7 +103,6 @@ public class BeliObatPanel extends JPanel{
         searchPanel.add(quantityField);
         searchPanel.add(addtoCartButton);
 
-
         // 3. Tambahkan ke Layout Utama
         add(searchPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
@@ -115,7 +117,6 @@ public class BeliObatPanel extends JPanel{
     private void loadTableData(List<Obat> daftarObat) {
         modelTabel.setRowCount(0);
         for (Obat obat : daftarObat) {
-            // tambah baris baru ke tabel model
             Object[] rowData = {
                 obat.getKode(), 
                 obat.getNama(), 
@@ -153,17 +154,13 @@ public class BeliObatPanel extends JPanel{
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
                 if (pesananSekarang.getItems() == null || pesananSekarang.getItems().isEmpty()) {
-                    JOptionPane.showMessageDialog(BeliObatPanel.this, "Keranjang kosong! Tambahkan obat terlebih dahulu.", 
-                                                "Peringatan", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(BeliObatPanel.this, "Keranjang kosong! Tambahkan obat terlebih dahulu.", "Peringatan", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-          
-            parentFrame.showPanel(MainFrame.Keranjang_Panel); // Gunakan goToCheckoutPanel
+            mainFrame.showPanel(MainFrame.KERANJANG); 
             }
         });
     }
-
-
 
     private void performSearch() {
         String keywordLower = searchField.getText().toLowerCase();
@@ -175,10 +172,7 @@ public class BeliObatPanel extends JPanel{
             String namaObatLower = o.getNama().toLowerCase();
             String kategoriObatLower = o.getKategori().toLowerCase();
             
-            // Logika Filter
-            if (namaObatLower.contains(keywordLower) || 
-                kategoriObatLower.contains(keywordLower)) {
-                
+            if (namaObatLower.contains(keywordLower) || kategoriObatLower.contains(keywordLower)) {   
                 hasilCari.add(o); 
             }
         }
@@ -189,8 +183,7 @@ public class BeliObatPanel extends JPanel{
         int selectedRow = obatTabel.getSelectedRow();
         
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Pilih obat yang ingin dibeli terlebih dahulu.", 
-                                          "Peringatan", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Pilih obat yang ingin dibeli terlebih dahulu.", "Peringatan", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -202,8 +195,7 @@ public class BeliObatPanel extends JPanel{
             int jumlah = Integer.parseInt(quantityField.getText().trim());
             
             if (jumlah <= 0) {
-                JOptionPane.showMessageDialog(this, "Jumlah harus lebih dari 0.", 
-                                              "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Jumlah harus lebih dari 0.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             
@@ -212,8 +204,7 @@ public class BeliObatPanel extends JPanel{
             
             if (obatDipilih != null) {
                 if (obatDipilih.getStok() < jumlah) {
-                    JOptionPane.showMessageDialog(this, "Stok " + obatDipilih.getNama() + " tidak cukup. Stok tersedia: " + obatDipilih.getStok(), 
-                                                  "Error Stok", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Stok " + obatDipilih.getNama() + " tidak cukup. Stok tersedia: " + obatDipilih.getStok(), "Error Stok", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 
@@ -221,9 +212,7 @@ public class BeliObatPanel extends JPanel{
                 ItemKeranjang itemBaru = new ItemKeranjang(obatDipilih, jumlah);
                 pesananSekarang.addItem(itemBaru);
                 
-                JOptionPane.showMessageDialog(this, jumlah + "x " + obatDipilih.getNama() + " berhasil ditambahkan ke keranjang.", 
-                                              "Sukses", JOptionPane.INFORMATION_MESSAGE);
-                
+                JOptionPane.showMessageDialog(this, jumlah + "x " + obatDipilih.getNama() + " berhasil ditambahkan ke keranjang.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                 
                 loadTableData(DataManager.getInstance().getDaftarObat()); 
 
@@ -236,11 +225,11 @@ public class BeliObatPanel extends JPanel{
     }
 
     private String formatRupiah(double amount) {
-        NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("in", "ID")); // Locale Indonesia
-        return nf.format(amount).replace("Rp", "Rp "); // Menambahkan spasi setelah Rp (opsional)
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("id-ID")); 
+        return nf.format(amount).replace("Rp", "Rp ");
     }
 
-    public  void refreshObatData() {
+    public void refreshObatData() {
         loadTableData(DataManager.getInstance().getDaftarObat());
     }
 }

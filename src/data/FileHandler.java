@@ -13,20 +13,18 @@ public class FileHandler {
             dir.mkdirs();
         }
     }
-    //  buat nambah pesanan/konsultasi tanpa menghapus data lama.
+    
     public static void simpanKeFile(String namaFile, String data) {
         buatDirektori();
         try (BufferedWriter writer = new BufferedWriter(
                 new FileWriter(DATA_DIR + namaFile, true))) {
-            writer.write(data); // tulis data
-            writer.newLine(); // baris baru
+            writer.write(data);
+            writer.newLine();
         } catch (IOException e) {
             System.err.println("Error menyimpan ke file: " + e.getMessage());
         }
     }
     
-
-    // load data
     public static List<String> bacaDariFile(String namaFile) {
         List<String> data = new ArrayList<>();
         buatDirektori();
@@ -35,7 +33,7 @@ public class FileHandler {
         if (!file.exists()) {
             return data;
         }
-        // try and catch error dari pembacaan file
+
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -50,7 +48,6 @@ public class FileHandler {
         return data;
     }
     
-    // menyimpan banyak data sekaligus ke file 
     public static void simpanSemuaKeFile(String namaFile, List<String> data) {
         buatDirektori();
         try (BufferedWriter writer = new BufferedWriter(

@@ -49,17 +49,34 @@ public class CheckoutPanel extends JPanel {
         this.mainFrame = mainFrame;
         this.finalPesanan = pesananCheckout;
         setLayout(new BorderLayout(15, 15));
+        setBackground(new Color(240, 240, 240));
         
         // Panel Formulir & Detail Biaya
         JPanel centerPanel = new JPanel(new GridLayout(1, 2, 20, 10));
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        centerPanel.setBackground(new Color(240, 240, 240));
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 10, 20));
 
         // Input Pengiriman/Pembayaran (sblh kiri)
         JPanel inputPanel = new JPanel(new GridLayout(8, 1, 10, 10));
-        inputPanel.setBorder(BorderFactory.createTitledBorder("Pilihan Checkout"));
+        inputPanel.setBackground(Color.WHITE);
+        inputPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(new Color(70, 130, 180), 2),
+                "Pilihan Checkout",
+                javax.swing.border.TitledBorder.LEFT,
+                javax.swing.border.TitledBorder.TOP,
+                new Font("Arial", Font.BOLD, 14),
+                new Color(70, 130, 180)
+            ),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
         
-        inputPanel.add(new JLabel("1. Pilih Jenis Pengambilan:"));
+        JLabel label1 = new JLabel("1. Pilih Jenis Pengambilan:");
+        label1.setFont(new Font("Arial", Font.BOLD, 13));
+        inputPanel.add(label1);
+        
         jenisAmbilCombo = new JComboBox<>(new String[]{"Ambil Langsung", "Antar (Delivery)"});
+        jenisAmbilCombo.setFont(new Font("Arial", Font.PLAIN, 13));
         jenisAmbilCombo.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -71,13 +88,16 @@ public class CheckoutPanel extends JPanel {
         
         // Lokasi
         JPanel lokasiInputPanel = new JPanel(new BorderLayout(5, 0));
+        lokasiInputPanel.setBackground(Color.WHITE);
         lokasiDisplayField = new JTextField("--- Belum dipilih ---");
         lokasiDisplayField.setEditable(false);
+        lokasiDisplayField.setFont(new Font("Arial", Font.PLAIN, 13));
+        
         pilihLokasiButton = new JButton("Pilih Lokasi");
-
-        pilihLokasiButton.setBackground(new Color(150, 150, 150));
-        pilihLokasiButton.setForeground(Color.BLACK); 
-        pilihLokasiButton.setOpaque(true);
+        pilihLokasiButton.setBackground(new Color(70, 130, 180));
+        pilihLokasiButton.setForeground(Color.WHITE);
+        pilihLokasiButton.setFont(new Font("Arial", Font.BOLD, 12));
+        pilihLokasiButton.setFocusPainted(false);
         pilihLokasiButton.setBorderPainted(false);
 
         pilihLokasiButton.addActionListener(new java.awt.event.ActionListener() {
@@ -90,38 +110,78 @@ public class CheckoutPanel extends JPanel {
         lokasiInputPanel.add(lokasiDisplayField, BorderLayout.CENTER);
         lokasiInputPanel.add(pilihLokasiButton, BorderLayout.EAST);
 
-        inputPanel.add(new JLabel("2. Lokasi Pengiriman:"));
+        JLabel label2 = new JLabel("2. Lokasi Pengiriman:");
+        label2.setFont(new Font("Arial", Font.BOLD, 13));
+        inputPanel.add(label2);
         inputPanel.add(lokasiInputPanel);
         
-        inputPanel.add(new JLabel("   Alamat Detail:"));
+        JLabel label3 = new JLabel("   Alamat Detail:");
+        label3.setFont(new Font("Arial", Font.PLAIN, 13));
+        inputPanel.add(label3);
         alamatDetail = new JTextField();
+        alamatDetail.setFont(new Font("Arial", Font.PLAIN, 13));
         inputPanel.add(alamatDetail);
         
-        inputPanel.add(new JLabel("3. Pilih Metode Pembayaran:"));
+        JLabel label4 = new JLabel("3. Pilih Metode Pembayaran:");
+        label4.setFont(new Font("Arial", Font.BOLD, 13));
+        inputPanel.add(label4);
         pembayaranCombo = new JComboBox<>(new String[]{"Transfer Bank", "QRIS", "E-Wallet"});
+        pembayaranCombo.setFont(new Font("Arial", Font.PLAIN, 13));
         inputPanel.add(pembayaranCombo);
 
         // Rincian Biaya (sblh kanan)
-        JPanel detailPanel = new JPanel(new GridLayout(5, 2, 5, 5));
-        detailPanel.setBorder(BorderFactory.createTitledBorder("Rincian Biaya"));
+        JPanel detailPanel = new JPanel(new GridLayout(5, 2, 5, 10));
+        detailPanel.setBackground(Color.WHITE);
+        detailPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(new Color(60, 150, 100), 2),
+                "Rincian Biaya",
+                javax.swing.border.TitledBorder.LEFT,
+                javax.swing.border.TitledBorder.TOP,
+                new Font("Arial", Font.BOLD, 14),
+                new Color(60, 150, 100)
+            ),
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)
+        ));
         
         totalObatLabel = new JLabel(formatRupiah(finalPesanan.getTotalObat()));
-        biayaKemasanLabel = new JLabel("Rp 0.00");
-        ongkirLabel = new JLabel("Rp 0.00");
-        totalBayarLabel = new JLabel(formatRupiah(finalPesanan.getTotalBayar()));
-        totalBayarLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+        totalObatLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         
-        detailPanel.add(new JLabel("Total Harga Obat:"));
+        biayaKemasanLabel = new JLabel("Rp 0.00");
+        biayaKemasanLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        
+        ongkirLabel = new JLabel("Rp 0.00");
+        ongkirLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        
+        totalBayarLabel = new JLabel(formatRupiah(finalPesanan.getTotalBayar()));
+        totalBayarLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        totalBayarLabel.setForeground(new Color(60, 150, 100));
+        
+        JLabel labelObat = new JLabel("Total Harga Obat:");
+        labelObat.setFont(new Font("Arial", Font.PLAIN, 13));
+        detailPanel.add(labelObat);
         detailPanel.add(totalObatLabel);
-        detailPanel.add(new JLabel("Biaya Pengemasan:"));
+        
+        JLabel labelKemasan = new JLabel("Biaya Pengemasan:");
+        labelKemasan.setFont(new Font("Arial", Font.PLAIN, 13));
+        detailPanel.add(labelKemasan);
         detailPanel.add(biayaKemasanLabel);
-        detailPanel.add(new JLabel("Ongkos Kirim:"));
+        
+        JLabel labelOngkir = new JLabel("Ongkos Kirim:");
+        labelOngkir.setFont(new Font("Arial", Font.PLAIN, 13));
+        detailPanel.add(labelOngkir);
         detailPanel.add(ongkirLabel);
         
-        detailPanel.add(new JLabel("-----------------"));
-        detailPanel.add(new JLabel("-----------------"));
+        JLabel separator1 = new JLabel("─────────────");
+        separator1.setForeground(Color.GRAY);
+        JLabel separator2 = new JLabel("─────────────");
+        separator2.setForeground(Color.GRAY);
+        detailPanel.add(separator1);
+        detailPanel.add(separator2);
 
-        detailPanel.add(new JLabel("TOTAL AKHIR:"));
+        JLabel labelTotal = new JLabel("TOTAL AKHIR:");
+        labelTotal.setFont(new Font("Arial", Font.BOLD, 14));
+        detailPanel.add(labelTotal);
         detailPanel.add(totalBayarLabel);
         
         centerPanel.add(inputPanel);
@@ -130,13 +190,17 @@ public class CheckoutPanel extends JPanel {
         add(centerPanel, BorderLayout.CENTER);
 
         // Selesaikan pesanan (sblh kanan bwh)
-        JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton backButton = new JButton("<< Kembali Keranjang");
-
-        backButton.setBackground(new Color(30, 90, 80));
-        backButton.setForeground(Color.WHITE); 
-        backButton.setOpaque(true);
+        JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 15));
+        southPanel.setBackground(new Color(240, 240, 240));
+        southPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 15, 0));
+        
+        JButton backButton = new JButton("← Kembali ke Keranjang");
+        backButton.setBackground(new Color(100, 100, 100));
+        backButton.setForeground(Color.WHITE);
+        backButton.setFont(new Font("Arial", Font.BOLD, 14));
+        backButton.setFocusPainted(false);
         backButton.setBorderPainted(false);
+        backButton.setPreferredSize(new Dimension(200, 40));
 
         southPanel.add(backButton);
 
@@ -148,12 +212,11 @@ public class CheckoutPanel extends JPanel {
         });
 
         completeOrderButton = new JButton("SELESAIKAN PESANAN & BAYAR");
-        completeOrderButton.setFont(new Font("SansSerif", Font.BOLD, 13));
-        completeOrderButton.setPreferredSize(new Dimension(250, 30));
-
-        completeOrderButton.setBackground(new Color(46, 139, 87));
+        completeOrderButton.setFont(new Font("Arial", Font.BOLD, 14));
+        completeOrderButton.setPreferredSize(new Dimension(280, 40));
+        completeOrderButton.setBackground(new Color(60, 150, 100));
         completeOrderButton.setForeground(Color.WHITE);
-        completeOrderButton.setOpaque(true);
+        completeOrderButton.setFocusPainted(false);
         completeOrderButton.setBorderPainted(false);
 
         southPanel.add(completeOrderButton);

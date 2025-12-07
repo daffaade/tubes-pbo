@@ -28,8 +28,8 @@ public class MapDrawingPanel extends JPanel {
     private static final Color WARNA_LOKASI_TERPILIH = new Color(70, 130, 180);
     
     private final Point[] DEFAULT_ABSTRACT_COORDS = {
-        new Point(290, 50),      // 0. Jebres
-        new Point(220, 130),     // 1. RS Muwardi
+        new Point(330, 100),      // 0. Jebres
+        new Point(200, 120),     // 1. RS Muwardi
         new Point(100, 190),     // 2. Slamet Riyadi
         new Point(210, 290),    // 3.  Alun-alun 
         new Point(300, 250),    // 4. Pasar Kliwon
@@ -134,8 +134,8 @@ public class MapDrawingPanel extends JPanel {
     
             if (namaLokasi.equals("RS. Muwardi")) {
                 //pindah ke kiri Titik
-                textX = p.x - 200; //geser ke kiri, 100 piksel
-                textY = p.y + 5;
+                textX = p.x - 150; //geser ke kiri, 100 piksel
+                textY = p.y - 15;
             } else if (namaLokasi.equals("Slamet Riyadi")) {
                 //pindah ke bawah Titik
                 textX = p.x - 10;

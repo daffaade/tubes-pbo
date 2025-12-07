@@ -134,7 +134,7 @@ public class MapDrawingPanel extends JPanel {
     
             if (namaLokasi.equals("RS. Muwardi")) {
                 //pindah ke kiri Titik
-                textX = p.x - 70; //geser ke kiri, 70 piksel
+                textX = p.x - 200; //geser ke kiri, 100 piksel
                 textY = p.y + 5;
             } else if (namaLokasi.equals("Slamet Riyadi")) {
                 //pindah ke bawah Titik

@@ -12,6 +12,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -35,6 +36,7 @@ public class KeranjangPanel extends JPanel {
         this.mainFrame = mainFrame;
         this.pesananSekarang = pesananAktif;
         setLayout(new BorderLayout(10, 10));
+        setBackground(new Color(240, 240, 240));
 
         // 1. Inisialiasi tabel
         String[] namaKolom = {"Kode", "Nama Obat", "Harga", "Jumlah", "Subtotal"};
@@ -66,20 +68,30 @@ public class KeranjangPanel extends JPanel {
         tabelKeranjang = new JTable(modelTabel);
         tabelKeranjang.setShowGrid(true);
         tabelKeranjang.setGridColor(Color.LIGHT_GRAY); 
-        tabelKeranjang.setIntercellSpacing(new Dimension(1, 1));
+        tabelKeranjang.setIntercellSpacing(new Dimension(1, 3));
+        tabelKeranjang.setFont(new Font("Arial", Font.PLAIN, 13));
+        tabelKeranjang.setRowHeight(25);
+        tabelKeranjang.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
+        
         JScrollPane scrollPane = new JScrollPane(tabelKeranjang);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         add(scrollPane, BorderLayout.CENTER);
            
         totalLabel = new JLabel("Total Belanja: Rp 0.00");
-        totalLabel.setFont(new Font("SansSerif", Font.BOLD, 13));
+        totalLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        totalLabel.setForeground(new Color(50, 50, 50));
 
-        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JButton backButton = new JButton("<< Kembali Belanja");
-        backButton.setBackground(new Color(30, 90, 80));
+        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 15));
+        actionPanel.setBackground(new Color(240, 240, 240));
+        actionPanel.setBorder(BorderFactory.createEmptyBorder(5, 0, 15, 0));
+        
+        JButton backButton = new JButton("← Kembali Belanja");
+        backButton.setBackground(new Color(100, 100, 100));
         backButton.setForeground(Color.WHITE);
-        backButton.setOpaque(true);
+        backButton.setFont(new Font("Arial", Font.BOLD, 14));
+        backButton.setFocusPainted(false);
         backButton.setBorderPainted(false);
-        backButton.setPreferredSize(new Dimension(140, 20));
+        backButton.setPreferredSize(new Dimension(160, 40));
 
         backButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -89,18 +101,20 @@ public class KeranjangPanel extends JPanel {
         });
        
         removeButton = new JButton("Hapus Item");
-        removeButton.setBackground(new Color(180, 50, 50));
+        removeButton.setBackground(new Color(220, 53, 69));
         removeButton.setForeground(Color.WHITE);
-        removeButton.setOpaque(true);
+        removeButton.setFont(new Font("Arial", Font.BOLD, 14));
+        removeButton.setFocusPainted(false);
         removeButton.setBorderPainted(false);
-        removeButton.setPreferredSize(new Dimension(100, 20));
+        removeButton.setPreferredSize(new Dimension(130, 40));
 
-        checkoutButton = new JButton("CheckOut Item >>");
-        checkoutButton.setBackground(new Color(46, 139, 87));
+        checkoutButton = new JButton("Checkout →");
+        checkoutButton.setBackground(new Color(60, 150, 100));
         checkoutButton.setForeground(Color.WHITE);
-        checkoutButton.setOpaque(true);
+        checkoutButton.setFont(new Font("Arial", Font.BOLD, 14));
+        checkoutButton.setFocusPainted(false);
         checkoutButton.setBorderPainted(false);
-        checkoutButton.setPreferredSize(new Dimension(140, 20));
+        checkoutButton.setPreferredSize(new Dimension(130, 40));
 
         actionPanel.add(backButton);
         actionPanel.add(totalLabel);

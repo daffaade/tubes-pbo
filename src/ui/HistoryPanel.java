@@ -1,25 +1,21 @@
 package ui;
 
 import data.DataManager;
-import model.History;
-
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.JScrollPane;
-import javax.swing.BorderFactory;
-import javax.swing.table.DefaultTableModel;
-
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Component;
-
 import java.util.List;
-import java.util.ArrayList;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import model.History;
 
 public class HistoryPanel extends JPanel {
 

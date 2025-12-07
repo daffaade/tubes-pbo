@@ -1,8 +1,9 @@
+
 package data;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
-import model.*;
-import java.text.SimpleDateFormat; 
+import model.*; 
 
 public class DataManager {
     

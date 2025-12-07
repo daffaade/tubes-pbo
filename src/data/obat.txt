@@ -1,10 +1,10 @@
-OBT001|Paracetamol 500mg|5000.00|99|Demam
+OBT001|Paracetamol 500mg|5000.00|95|Demam
 OBT002|Amoxicillin 500mg|15000.00|50|Antibiotik
-OBT003|Antimo|8000.00|75|Mual
-OBT004|Promag|10000.00|60|Maag
-OBT005|Panadol Extra|12000.00|80|Demam
+OBT003|Antimo|8000.00|25|Mual
+OBT004|Promag|10000.00|58|Maag
+OBT005|Panadol Extra|12000.00|30|Demam
 OBT006|OBH Combi|18000.00|40|Batuk
 OBT007|Decolgen|7000.00|90|Flu
 OBT008|Bodrex|6000.00|83|Sakit Kepala
 OBT009|Sangobion|25000.00|30|Vitamin
-OBT010|Betadine|15000.00|45|Antiseptik
+OBT010|Betadine|15000.00|44|Antiseptik

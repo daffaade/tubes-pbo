@@ -13,8 +13,10 @@ import java.awt.BorderLayout;
 import java.awt.Color; 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.text.NumberFormat;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -44,6 +46,7 @@ public class BeliObatPanel extends JPanel{
         this.mainFrame = mainFrame;
         this.pesananSekarang = pesananAktif;
         setLayout(new BorderLayout(10, 10));
+        setBackground(new Color(240, 240, 240));
 
         // 1. Tabel Obat
         String[] namaKolom = {"Kode", "Nama Obat", "Harga", "Stok", "Kategori"};
@@ -58,54 +61,76 @@ public class BeliObatPanel extends JPanel{
         obatTabel.setShowGrid(true);
         obatTabel.setGridColor(Color.LIGHT_GRAY);
         obatTabel.setIntercellSpacing(new Dimension(1, 3));
+        obatTabel.setFont(new Font("Arial", Font.PLAIN, 13));
+        obatTabel.setRowHeight(25);
+        obatTabel.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
 
         JScrollPane scrollPane = new JScrollPane(obatTabel);
-
-        add(scrollPane, BorderLayout.CENTER);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
         // Field dan tombol pencari
-        searchField = new JTextField(10);
+        searchField = new JTextField(15);
+        searchField.setFont(new Font("Arial", Font.PLAIN, 14));
+        searchField.setPreferredSize(new Dimension(150, 30));
+        
         searchButton = new JButton("Cari Obat");
         searchButton.setBackground(new Color(70, 130, 180));
         searchButton.setForeground(Color.WHITE);
-        searchButton.setOpaque(true);
+        searchButton.setFont(new Font("Arial", Font.BOLD, 14));
+        searchButton.setFocusPainted(false);
         searchButton.setBorderPainted(false);
-        searchButton.setPreferredSize(new Dimension(100, 20));
+        searchButton.setPreferredSize(new Dimension(110, 35));
 
         // Field dan tombol tambah ke keranjang
-        quantityField = new JTextField("1", 2);//defaultnya udh ada jumlah 1
+        quantityField = new JTextField("1", 3);
+        quantityField.setFont(new Font("Arial", Font.PLAIN, 14));
+        quantityField.setPreferredSize(new Dimension(50, 30));
+        
         addtoCartButton = new JButton("Tambah ke Keranjang");
-        addtoCartButton.setBackground(new Color(70, 130, 180));
+        addtoCartButton.setBackground(new Color(60, 150, 100));
         addtoCartButton.setForeground(Color.WHITE);
-        addtoCartButton.setOpaque(true);
+        addtoCartButton.setFont(new Font("Arial", Font.BOLD, 14));
+        addtoCartButton.setFocusPainted(false);
         addtoCartButton.setBorderPainted(false);
-        addtoCartButton.setPreferredSize(new Dimension(120, 20));
+        addtoCartButton.setPreferredSize(new Dimension(180, 35));
 
-        checkoutButton = new JButton("Lihat Keranjang & Checkout Sekarang");
-
-        checkoutButton.setBackground(new Color(46, 139, 87));
+        checkoutButton = new JButton("Lihat Keranjang & Checkout");
+        checkoutButton.setBackground(new Color(255, 140, 0));
         checkoutButton.setForeground(Color.WHITE);
-        checkoutButton.setOpaque(true);
+        checkoutButton.setFont(new Font("Arial", Font.BOLD, 16));
+        checkoutButton.setFocusPainted(false);
         checkoutButton.setBorderPainted(false);
+        checkoutButton.setPreferredSize(new Dimension(280, 45));
 
-        JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        controlPanel.setBackground(new Color(240, 240, 240));
+        controlPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
         controlPanel.add(checkoutButton);
-        add(controlPanel, BorderLayout.SOUTH);
 
         // 2. Panel Pencarian Obat
-        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        searchPanel.setBackground(new Color(30, 90, 80));
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 15));
+        searchPanel.setBackground(new Color(70, 130, 180));
+        searchPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
-        searchPanel.add(new JLabel("Cari Nama Obat:"));
+        JLabel searchLabel = new JLabel("Cari Nama Obat:");
+        searchLabel.setForeground(Color.WHITE);
+        searchLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        
+        JLabel quantityLabel = new JLabel("Jumlah:");
+        quantityLabel.setForeground(Color.WHITE);
+        quantityLabel.setFont(new Font("Arial", Font.BOLD, 14));
+
+        searchPanel.add(searchLabel);
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
-        searchPanel.add(new JLabel("Jumlah:"));
+        searchPanel.add(quantityLabel);
         searchPanel.add(quantityField);
         searchPanel.add(addtoCartButton);
 
         // 3. Tambahkan ke Layout Utama
         add(searchPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
+        add(controlPanel, BorderLayout.SOUTH);
         
         // 4. Muat Data Awal
         loadTableData(DataManager.getInstance().getDaftarObat());
@@ -157,7 +182,8 @@ public class BeliObatPanel extends JPanel{
                     JOptionPane.showMessageDialog(BeliObatPanel.this, "Keranjang kosong! Tambahkan obat terlebih dahulu.", "Peringatan", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-            mainFrame.showPanel(MainFrame.KERANJANG); 
+                mainFrame.getKeranjangPanel().refreshData();
+                mainFrame.showPanel(MainFrame.KERANJANG); 
             }
         });
     }

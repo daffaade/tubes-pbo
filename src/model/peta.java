@@ -23,4 +23,3 @@ public class Peta {
         return namaLokasi + " (" + jarak + " KM)";
     }
 }
-

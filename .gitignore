@@ -1,0 +1,24 @@
+﻿# Compiled class files - isi dari folder output
+*.class
+
+# Folder output compilation (hapus isinya, bukan foldernya)
+/model/*.class
+/ui/*.class
+/bin/**/*.class
+/out/**/*.class
+
+# Package Files
+*.war
+*.ear
+
+# Data folder
+/data/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+.DS_Store

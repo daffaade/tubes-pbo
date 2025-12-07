@@ -1,11 +1,6 @@
 package ui;
 
 import data.DataManager;
-<<<<<<< HEAD
-import java.awt.*;
-import javax.swing.*;
-import model.Users;
-=======
 import model.Users;
 
 import javax.swing.JFrame;
@@ -29,7 +24,6 @@ import java.awt.Font;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Component;
->>>>>>> d4aeb3ec79b2ee3c3ea57829f4ad87b9f83ac168
 
 public class LoginFrame extends JFrame {
     
@@ -191,12 +185,8 @@ public class LoginFrame extends JFrame {
                 JOptionPane.INFORMATION_MESSAGE);
             
             // Buka main frame
-<<<<<<< HEAD
-            MainFrame mainFrame = new MainFrame("Sistem Apotek");
-=======
             // Perhatikan: MainFrame harus memiliki constructor tanpa parameter atau yang sesuai
             MainFrame mainFrame = new MainFrame();
->>>>>>> d4aeb3ec79b2ee3c3ea57829f4ad87b9f83ac168
             mainFrame.setVisible(true);
             
             // Tutup login frame

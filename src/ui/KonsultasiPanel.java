@@ -4,14 +4,28 @@ import data.DataManager;
 import model.Konsultasi;
 import model.Obat;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import javax.swing.JTextArea;
+import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.JScrollPane;
+import javax.swing.BorderFactory;
+
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Insets;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class KonsultasiPanel extends JFrame {
+public class KonsultasiPanel extends JPanel {
 
     private DataManager dm = DataManager.getInstance();
 
@@ -20,11 +34,6 @@ public class KonsultasiPanel extends JFrame {
     private JTextArea areaOutput;
 
     public KonsultasiPanel() {
-        setTitle("Panel Konsultasi");
-        setSize(500, 450);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
         setLayout(new BorderLayout());
 
         // PANEL ATAS
@@ -51,6 +60,10 @@ public class KonsultasiPanel extends JFrame {
         panelInput.add(comboGejala);
 
         JButton btnSubmit = new JButton("Konsultasi");
+        btnSubmit.setBackground(new Color(70, 130, 180));
+        btnSubmit.setForeground(Color.WHITE);
+        btnSubmit.setFocusPainted(false);
+        
         panelInput.add(btnSubmit);
 
         add(panelInput, BorderLayout.NORTH);
@@ -59,6 +72,7 @@ public class KonsultasiPanel extends JFrame {
         areaOutput = new JTextArea();
         areaOutput.setEditable(false);
         areaOutput.setMargin(new Insets(10, 10, 10, 10));
+        areaOutput.setFont(new Font("SansSerif", Font.PLAIN, 13));
         add(new JScrollPane(areaOutput), BorderLayout.CENTER);
 
         // ACTION BUTTON
@@ -94,15 +108,7 @@ public class KonsultasiPanel extends JFrame {
         dm.simpanKonsultasi(k);
 
         areaOutput.setText(
-                "Rekomendasi obat untuk gejala '" + gejala + "':\n" +
-                rekomendasi + "\n\n" +
-                "Konsultasi berhasil disimpan."
+                "Rekomendasi obat untuk gejala '" + gejala + "':\n" + rekomendasi + "\n\n" + "Konsultasi berhasil disimpan."
         );
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new KonsultasiPanel().setVisible(true);
-        });
     }
 }

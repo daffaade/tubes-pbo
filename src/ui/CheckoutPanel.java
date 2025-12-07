@@ -1,45 +1,60 @@
 package ui;
 
 import data.DataManager;
-import java.awt.*;
-import java.text.NumberFormat;
-import java.util.Locale;
-import javax.swing.*;
 import model.Pesanan;
 import model.Peta;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Frame;
+
+import java.awt.event.ActionListener;
+
+import javax.swing.JPanel;
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
 public class CheckoutPanel extends JPanel {
 
-    private MainFrame parentFrame;
+    private MainFrame mainFrame;
     private Pesanan finalPesanan;
     private final double BiayaPerKM = 3000.0;
     private final double BiayaPengemasan = 2000.0;
     
-    //Input
     private JComboBox<String> jenisAmbilCombo;
     private JTextField lokasiDisplayField; 
     private JButton pilihLokasiButton;
     private JTextField alamatDetail; 
     private JComboBox<String> pembayaranCombo;
     
-    //Display Biaya
     private JLabel totalObatLabel;
     private JLabel biayaKemasanLabel;
     private JLabel ongkirLabel;
     private JLabel totalBayarLabel;
     private JButton completeOrderButton;
 
-    public CheckoutPanel(MainFrame parent, Pesanan pesananCheckout) {
-        this.parentFrame = parent;
+    public CheckoutPanel(MainFrame mainFrame, Pesanan pesananCheckout) {
+        this.mainFrame = mainFrame;
         this.finalPesanan = pesananCheckout;
         setLayout(new BorderLayout(15, 15));
         
-        //Panel Formulir & Detail Biaya
+        // Panel Formulir & Detail Biaya
         JPanel centerPanel = new JPanel(new GridLayout(1, 2, 20, 10));
         centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-
-        //Input Pengiriman/Pembayaran (sblh kiri)
+        // Input Pengiriman/Pembayaran (sblh kiri)
         JPanel inputPanel = new JPanel(new GridLayout(8, 1, 10, 10));
         inputPanel.setBorder(BorderFactory.createTitledBorder("Pilihan Checkout"));
         
@@ -54,7 +69,7 @@ public class CheckoutPanel extends JPanel {
 
         inputPanel.add(jenisAmbilCombo);
         
-        //lokasi
+        // Lokasi
         JPanel lokasiInputPanel = new JPanel(new BorderLayout(5, 0));
         lokasiDisplayField = new JTextField("--- Belum dipilih ---");
         lokasiDisplayField.setEditable(false);
@@ -86,7 +101,7 @@ public class CheckoutPanel extends JPanel {
         pembayaranCombo = new JComboBox<>(new String[]{"Transfer Bank", "QRIS", "E-Wallet"});
         inputPanel.add(pembayaranCombo);
 
-        //Rincian Biaya (sblh kanan)
+        // Rincian Biaya (sblh kanan)
         JPanel detailPanel = new JPanel(new GridLayout(5, 2, 5, 5));
         detailPanel.setBorder(BorderFactory.createTitledBorder("Rincian Biaya"));
         
@@ -114,7 +129,7 @@ public class CheckoutPanel extends JPanel {
     
         add(centerPanel, BorderLayout.CENTER);
 
-        //selesaikan pesanan (sblh kanan bwh)
+        // Selesaikan pesanan (sblh kanan bwh)
         JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton backButton = new JButton("<< Kembali Keranjang");
 
@@ -128,7 +143,7 @@ public class CheckoutPanel extends JPanel {
         backButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                parentFrame.showPanel(MainFrame.Keranjang_Panel);
+                mainFrame.showPanel(MainFrame.KERANJANG);
             }
         });
 
@@ -156,22 +171,20 @@ public class CheckoutPanel extends JPanel {
 
     private void bukaPilihLokasiDialog() {
         if ("Antar (Delivery)".equals(jenisAmbilCombo.getSelectedItem())) {
-        //buka peta
+        // Buka peta
         PetaPanel dialog = new PetaPanel(
             (Frame) SwingUtilities.getWindowAncestor(this));
         dialog.setVisible(true);
 
-        //ambil lokasi
+        // Ambil lokasi
         Peta lokasiDipilih = dialog.getLokasiTerpilih();
         
         if (lokasiDipilih != null) {
-            //simpan jarak
+            // Simpan jarak
             finalPesanan.setOngkir(lokasiDipilih.getJarak() * BiayaPerKM);
-            
-            lokasiDisplayField.setText(lokasiDipilih.getNamaLokasi() + 
-                                       " (" + lokasiDipilih.getJarak() + " KM)");
+            lokasiDisplayField.setText(lokasiDipilih.getNamaLokasi() + " (" + lokasiDipilih.getJarak() + " KM)");
         } else {
-            //jika batal pilih lokasi, reset ongkir
+            // Jika batal pilih lokasi, reset ongkir
             finalPesanan.setOngkir(0);
             lokasiDisplayField.setText("--- Belum dipilih ---");
         }
@@ -181,7 +194,7 @@ public class CheckoutPanel extends JPanel {
     }
 
     private String formatRupiah(double amount) {
-        NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("in", "ID"));
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("id-ID"));
         return nf.format(amount).replace("Rp", "Rp ");
     }
 
@@ -212,7 +225,7 @@ public class CheckoutPanel extends JPanel {
             }
 
         } else {
-            //jika ambil langsung
+    
             finalPesanan.setOngkir(0);
             finalPesanan.setBiayaPengemasan(0);
 
@@ -236,6 +249,7 @@ public class CheckoutPanel extends JPanel {
     }
 
     private void processCheckout() {
+
         if (finalPesanan.getItems() == null || finalPesanan.getItems().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Keranjang belanja kosong! Tidak bisa checkout.", "Peringatan", JOptionPane.WARNING_MESSAGE);
             return;
@@ -271,31 +285,31 @@ public class CheckoutPanel extends JPanel {
         finalPesanan.setAlamat(alamatFinal);
         updateBiayaPengiriman(); 
 
-        //sebelum menyimpan, generate nomor pesanan baru
+        // Sebelum menyimpan, generate nomor pesanan baru
         finalPesanan.setNoPesanan(DataManager.getInstance().generateNoPesanan());
 
-        //impan data yang akan ditampilkan di konfirmasi ke variabel lokal
+        // Simpan data yang akan ditampilkan di konfirmasi ke variabel lokal
         String noPesananFinal = finalPesanan.getNoPesanan(); 
         double totalBayarFinal = finalPesanan.getTotalBayar(); 
 
-        //simpan pesanan ke DataManager
+        // Simpan pesanan ke DataManager
         DataManager.getInstance().simpanPesanan(finalPesanan); 
 
-        //Reset Keranjang di Model untuk transaksi baru
+        // Reset Keranjang di Model untuk transaksi baru
         finalPesanan.getItems().clear();
         finalPesanan.setOngkir(0.0);
         finalPesanan.setBiayaPengemasan(0.0);
 
-        //Konfirmasi
+        // Konfirmasi
         JOptionPane.showMessageDialog(this, 
             "Pesanan berhasil diselesaikan!\nNomor Pesanan: " + noPesananFinal + 
             "\nTotal Bayar: " + formatRupiah(totalBayarFinal) +
             "\nMohon tunggu konfirmasi lebih lanjut.", 
             "Pesanan Sukses", JOptionPane.INFORMATION_MESSAGE);
 
-        //Pindah Panel & Refresh
-        parentFrame.getBeliObatPanel().refreshObatData();
-        parentFrame.showPanel(MainFrame.BeliObat_Panel);
+        // Pindah Panel & Refresh
+        mainFrame.getBeliObatPanel().refreshObatData();
+        mainFrame.showPanel(MainFrame.BELI_OBAT);
     }
 
     public void refreshData() {

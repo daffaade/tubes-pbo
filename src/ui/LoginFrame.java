@@ -1,16 +1,44 @@
 package ui;
 
 import data.DataManager;
+<<<<<<< HEAD
 import java.awt.*;
 import javax.swing.*;
 import model.Users;
+=======
+import model.Users;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JPasswordField;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.Box;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.ImageIcon;
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Component;
+>>>>>>> d4aeb3ec79b2ee3c3ea57829f4ad87b9f83ac168
 
 public class LoginFrame extends JFrame {
+    
     private DataManager dataManager;
     private JTextField txtUsername;
     private JPasswordField txtPassword;
     
     public LoginFrame() {
+
         dataManager = DataManager.getInstance();
         
         setTitle("Login - Sistem Apotek");
@@ -20,30 +48,31 @@ public class LoginFrame extends JFrame {
         setResizable(false);
 
         try {
+            // Pastikan file logo.png ada di classpath (misalnya, di folder resources)
             ImageIcon icon = new ImageIcon(getClass().getResource("/logo.png"));
             setIconImage(icon.getImage());
         } catch (Exception e) {
             System.out.println("Logo tidak ditemukan ");
         }
         
-        // Main panel
+        // Main panel (Menggunakan BorderLayout untuk Header, Form, dan Info)
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
-        mainPanel.setBackground(new Color(240, 248, 255));
+        mainPanel.setBackground(new Color(240, 248, 255)); // Light background
         
-        // Header panel
+        // 1. Header panel (NORTH) - Biru Tua
         JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(70, 130, 180));
+        headerPanel.setBackground(new Color(70, 130, 180)); // Warna Biru Header
         headerPanel.setPreferredSize(new Dimension(450, 120));
         headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
-        // label 
+        
         JLabel lblTitle = new JLabel("SISTEM APOTEK");
-        lblTitle.setFont(new Font("Arial", Font.BOLD, 28));
+        lblTitle.setFont(new Font("Poppins", Font.BOLD, 28));
         lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblTitle.setForeground(Color.WHITE);
         
         JLabel lblSubtitle = new JLabel("Aplikasi Manajemen Apotek");
-        lblSubtitle.setFont(new Font("Arial", Font.PLAIN, 14));
+        lblSubtitle.setFont(new Font("Poppins", Font.PLAIN, 14));
         lblSubtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblSubtitle.setForeground(Color.WHITE);
         
@@ -53,7 +82,7 @@ public class LoginFrame extends JFrame {
         headerPanel.add(lblSubtitle);
         headerPanel.add(Box.createVerticalStrut(15));
         
-        // Form panel
+        // 2. Form panel (CENTER)
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
         formPanel.setBackground(new Color(240, 248, 255));
@@ -61,21 +90,21 @@ public class LoginFrame extends JFrame {
         
         // Username
         JLabel lblUsername = new JLabel("Username:");
-        lblUsername.setFont(new Font("Arial", Font.BOLD, 14));
+        lblUsername.setFont(new Font("Poppins", Font.BOLD, 14));
         lblUsername.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         txtUsername = new JTextField();
-        txtUsername.setFont(new Font("Arial", Font.PLAIN, 14));
+        txtUsername.setFont(new Font("Poppins", Font.PLAIN, 14));
         txtUsername.setMaximumSize(new Dimension(400, 35));
         txtUsername.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         // Password
         JLabel lblPassword = new JLabel("Password:");
-        lblPassword.setFont(new Font("Arial", Font.BOLD, 14));
+        lblPassword.setFont(new Font("Poppins", Font.BOLD, 14));
         lblPassword.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         txtPassword = new JPasswordField();
-        txtPassword.setFont(new Font("Arial", Font.PLAIN, 14));
+        txtPassword.setFont(new Font("Poppins", Font.PLAIN, 14));
         txtPassword.setMaximumSize(new Dimension(400, 35));
         txtPassword.setAlignmentX(Component.CENTER_ALIGNMENT);
         
@@ -85,15 +114,15 @@ public class LoginFrame extends JFrame {
         buttonPanel.setMaximumSize(new Dimension(400, 50));
         
         JButton btnLogin = new JButton("Login");
-        btnLogin.setFont(new Font("Arial", Font.BOLD, 14));
-        btnLogin.setBackground(new Color(60, 179, 113));
+        btnLogin.setFont(new Font("Poppins", Font.BOLD, 14));
+        btnLogin.setBackground(new Color(60, 179, 113)); // Hijau
         btnLogin.setForeground(Color.WHITE);
         btnLogin.setFocusPainted(false);
         btnLogin.setPreferredSize(new Dimension(120, 35));
         
         JButton btnRegister = new JButton("Register");
-        btnRegister.setFont(new Font("Arial", Font.BOLD, 14));
-        btnRegister.setBackground(new Color(255, 140, 0));
+        btnRegister.setFont(new Font("Poppins", Font.BOLD, 14));
+        btnRegister.setBackground(new Color(255, 140, 0)); // Orange
         btnRegister.setForeground(Color.WHITE);
         btnRegister.setFocusPainted(false);
         btnRegister.setPreferredSize(new Dimension(120, 35));
@@ -101,15 +130,17 @@ public class LoginFrame extends JFrame {
         buttonPanel.add(btnLogin);
         buttonPanel.add(btnRegister);
         
-        // Info panel
+        // 3. Info panel (SOUTH)
         JPanel infoPanel = new JPanel();
         infoPanel.setBackground(new Color(240, 248, 255));
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0)); // Padding bawah
         
         JLabel lblInfo = new JLabel("<html><center>Default Login:<br>Username: admin | Password: admin123<br>Username: user | Password: user123</center></html>");
-        lblInfo.setFont(new Font("Arial", Font.ITALIC, 11));
+        lblInfo.setFont(new Font("Poppins", Font.ITALIC, 11));
         lblInfo.setForeground(Color.GRAY);
         lblInfo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblInfo.setHorizontalAlignment(SwingConstants.CENTER); // Pastikan teks di tengah
         infoPanel.add(lblInfo);
         
         // Add components to form panel
@@ -132,15 +163,15 @@ public class LoginFrame extends JFrame {
         // Enter key untuk login
         txtPassword.addActionListener(e -> login());
         
+        // Susun main panel
         mainPanel.add(headerPanel, BorderLayout.NORTH);
         mainPanel.add(formPanel, BorderLayout.CENTER);
-        //  tulisan info di bawah login form
-        lblInfo.setHorizontalAlignment(SwingConstants.CENTER);   
         mainPanel.add(infoPanel, BorderLayout.SOUTH); 
         
         add(mainPanel);
     }
     
+    // Login
     private void login() {
         String username = txtUsername.getText().trim();
         String password = new String(txtPassword.getPassword());
@@ -160,7 +191,12 @@ public class LoginFrame extends JFrame {
                 JOptionPane.INFORMATION_MESSAGE);
             
             // Buka main frame
+<<<<<<< HEAD
             MainFrame mainFrame = new MainFrame("Sistem Apotek");
+=======
+            // Perhatikan: MainFrame harus memiliki constructor tanpa parameter atau yang sesuai
+            MainFrame mainFrame = new MainFrame();
+>>>>>>> d4aeb3ec79b2ee3c3ea57829f4ad87b9f83ac168
             mainFrame.setVisible(true);
             
             // Tutup login frame
@@ -174,9 +210,10 @@ public class LoginFrame extends JFrame {
         }
     }
     
+    // Registrasi
     private void showRegisterDialog() {
-        JDialog dialog = new JDialog(this, "Register User Baru", true);
-        dialog.setSize(400, 400); // Ukuran disesuaikan karena alamat hilang
+        JDialog dialog = new JDialog(this, "Registrasi User Baru", true);
+        dialog.setSize(400, 400); 
         dialog.setLocationRelativeTo(this);
         
         JPanel panel = new JPanel();
@@ -189,7 +226,6 @@ public class LoginFrame extends JFrame {
         JPasswordField txtRegPassword = new JPasswordField();
         JPasswordField txtRegConfirm = new JPasswordField();
         JTextField txtRegNama = new JTextField();
-        // [HAPUS] Bagian JTextArea Alamat dihapus
         JTextField txtRegTelp = new JTextField();
         
         txtRegUsername.setMaximumSize(new Dimension(400, 30));
@@ -198,22 +234,38 @@ public class LoginFrame extends JFrame {
         txtRegNama.setMaximumSize(new Dimension(400, 30));
         txtRegTelp.setMaximumSize(new Dimension(400, 30));
         
-        panel.add(new JLabel("Username:"));
+        JLabel lblRegUsername = new JLabel("Username:");
+        lblRegUsername.setAlignmentX(Component.CENTER_ALIGNMENT);
+        txtRegUsername.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(lblRegUsername);
         panel.add(txtRegUsername);
-        panel.add(Box.createVerticalStrut(10));
-        panel.add(new JLabel("Password:"));
+        panel.add(Box.createVerticalStrut(15));
+        
+        JLabel lblRegPassword = new JLabel("Password:");
+        lblRegPassword.setAlignmentX(Component.CENTER_ALIGNMENT);
+        txtRegPassword.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(lblRegPassword);
         panel.add(txtRegPassword);
-        panel.add(Box.createVerticalStrut(10));
-        panel.add(new JLabel("Konfirmasi Password:"));
+        panel.add(Box.createVerticalStrut(15));
+        
+        JLabel lblRegConfirm = new JLabel("Konfirmasi Password:");
+        lblRegConfirm.setAlignmentX(Component.CENTER_ALIGNMENT);
+        txtRegConfirm.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(lblRegConfirm);
         panel.add(txtRegConfirm);
-        panel.add(Box.createVerticalStrut(10));
-        panel.add(new JLabel("Nama Lengkap:"));
+        panel.add(Box.createVerticalStrut(15));
+        
+        JLabel lblRegNama = new JLabel("Nama Lengkap:");
+        lblRegNama.setAlignmentX(Component.CENTER_ALIGNMENT);
+        txtRegNama.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(lblRegNama);
         panel.add(txtRegNama);
-        panel.add(Box.createVerticalStrut(10));
+        panel.add(Box.createVerticalStrut(15));
         
-        // [HAPUS] Bagian panel.add Alamat dihapus
-        
-        panel.add(new JLabel("No. Telepon:"));
+        JLabel lblRegTelp = new JLabel("No. Telepon:");
+        lblRegTelp.setAlignmentX(Component.CENTER_ALIGNMENT);
+        txtRegTelp.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(lblRegTelp);
         panel.add(txtRegTelp);
         panel.add(Box.createVerticalStrut(20));
         
@@ -235,10 +287,9 @@ public class LoginFrame extends JFrame {
             String password = new String(txtRegPassword.getPassword());
             String confirm = new String(txtRegConfirm.getPassword());
             String nama = txtRegNama.getText().trim();
-            // [HAPUS] String alamat dihapus
             String telp = txtRegTelp.getText().trim();
             
-            // Validasi (Alamat dihapus)
+            // Validasi
             if (username.isEmpty() || password.isEmpty() || nama.isEmpty() || telp.isEmpty()) {
                 JOptionPane.showMessageDialog(dialog,
                     "Semua field harus diisi!",
@@ -255,8 +306,7 @@ public class LoginFrame extends JFrame {
                 return;
             }
             
-            // [UBAH] Konstruktor Users sekarang cuma 4 parameter (tanpa alamat)
-            Users newUser = new Users(username, password, nama, telp);
+            Users newUser = new Users(username, password, nama, telp); 
             
             if (dataManager.register(newUser)) {
                 JOptionPane.showMessageDialog(dialog,
@@ -280,5 +330,12 @@ public class LoginFrame extends JFrame {
         
         dialog.add(panel);
         dialog.setVisible(true);
+    }
+    
+    // --- Main Method untuk menjalankan LoginFrame ---
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new LoginFrame().setVisible(true);
+        });
     }
 }

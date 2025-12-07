@@ -2,6 +2,7 @@ package data;
 
 import java.util.*;
 import model.*;
+import java.text.SimpleDateFormat; 
 
 public class DataManager {
     
@@ -10,19 +11,23 @@ public class DataManager {
     private List<Pesanan> daftarPesanan;
     private List<Konsultasi> daftarKonsultasi;
     private List<Users> daftarUsers; 
+    private List<History> daftarHistory;
     private Users currentUsers;      
-    
+
     private int noPesananCounter = 1;
     private int noKonsultasiCounter = 1;
+    private int noHistoryCounter = 1;
     
     private DataManager() {
         daftarObat = new ArrayList<>();
         daftarPesanan = new ArrayList<>();
         daftarKonsultasi = new ArrayList<>();
         daftarUsers = new ArrayList<>();
+        daftarHistory = new ArrayList<>();
         
         inisialisasiData();  
         inisialisasiUsers(); 
+        inisialisasiHistory();
     }
     
     public static DataManager getInstance() {
@@ -31,11 +36,47 @@ public class DataManager {
         }
         return instance;
     }
+
+    private void inisialisasiHistory() {
+
+        List<String> data = FileHandler.bacaDariFile("history.txt");
+        
+        if (!data.isEmpty()) {
+            for (String line : data) {
+                History h = History.fromString(line);
+                daftarHistory.add(h);
+
+                if (h.getNoHistory() >= noHistoryCounter) {
+                    noHistoryCounter = h.getNoHistory() + 1;
+                }
+            }
+        }
+    }
+
+    public void simpanHistory(History history) {
+        daftarHistory.add(history);
+        FileHandler.simpanKeFile("history.txt", history.toString());
+        noHistoryCounter++;
+    }
+
+    public int generateNoHistory() {
+        return noHistoryCounter;
+    }
+
+    public List<History> getDaftarHistory() {
+        return daftarHistory;
+    }
+
+    private String getTanggal() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        return sdf.format(new Date());
+    }
     
     private void inisialisasiData() {
+
         List<String> dataObat = FileHandler.bacaDariFile("obat.txt");
+       
         if (dataObat.isEmpty()) {
-            // Data default jika file kosong
             daftarObat.add(new Obat("OBT001", "Paracetamol 500mg", 5000, 100, "Demam"));
             daftarObat.add(new Obat("OBT002", "Amoxicillin 500mg", 15000, 50, "Antibiotik"));
             daftarObat.add(new Obat("OBT003", "Antimo", 8000, 75, "Mual"));
@@ -59,23 +100,21 @@ public class DataManager {
     }
     
     public Obat cariObat(String kode) {
-        //perulangan pada setiap objek Obat di daftarObat
+
         for (Obat obat : daftarObat) {
-            // pengecekan apakah kode obat cocok dengan kode yang dicari
             if (obat.getKode().equalsIgnoreCase(kode)) {
-                //jika ketemu yang pertama (findFirst), langsung kembalikan objek tersebut
                 return obat;
             }
         }
-        //Jika perulangan selesai dan tidak ada yang ditemukan (orElse(null)), kembalikan null
+
         return null;
     }
     
     public void simpanPesanan(Pesanan pesanan) {
+
         daftarPesanan.add(pesanan);
         FileHandler.simpanKeFile("pesanan.txt", pesanan.toString());
         
-        // Update stok obat
         for (ItemKeranjang item : pesanan.getItems()) {
             Obat obat = cariObat(item.getObat().getKode());
             if (obat != null) {
@@ -83,6 +122,9 @@ public class DataManager {
             }
         }
         simpanSemuaObat();
+
+        History h = new History(generateNoHistory(), currentUsers.getUsername(), getTanggal(), "Pembelian", pesanan.toString());
+        simpanHistory(h);
     }
     
     public String generateNoPesanan() {
@@ -92,14 +134,17 @@ public class DataManager {
     public void simpanKonsultasi(Konsultasi konsultasi) {
         daftarKonsultasi.add(konsultasi);
         FileHandler.simpanKeFile("konsultasi.txt", konsultasi.toString());
+
+        History h = new History(generateNoHistory(), currentUsers.getUsername(), getTanggal(), "Konsultasi", konsultasi.toString());
+        simpanHistory(h);
     }
     
     public String generateNoKonsultasi() {
         return String.format("KSL%04d", noKonsultasiCounter++);
     }
     
-    // Logika rekomendasi obat sederhana
     public String getRekomendasi(String gejala) {
+
         String gejalaLower = gejala.toLowerCase();
         
         if (gejalaLower.contains("demam") || gejalaLower.contains("panas")) {
@@ -122,29 +167,37 @@ public class DataManager {
     }
     
     private void simpanSemuaObat() {
+
         List<String> data = new ArrayList<>();
+
         for (Obat obat : daftarObat) {
             data.add(obat.toString());
         }
+
         FileHandler.simpanSemuaKeFile("obat.txt", data);
     }
     
-    // Management Users
     private void inisialisasiUsers() {
+
         List<String> dataUser = FileHandler.bacaDariFile("users.txt");
+      
         if (dataUser.isEmpty()) {
-            // User default
+
             daftarUsers.add(new Users("admin", "admin123", "Administrator", "081234567890"));
             daftarUsers.add(new Users("user", "user123", "User Test", "081234567891"));
             simpanSemuaUsers();
+
         } else {
+
             for (String line : dataUser) {
                 daftarUsers.add(Users.fromString(line));
             }
+            
         }
     }
     
     public boolean login(String username, String password) {
+
         for (Users user : daftarUsers) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
                 currentUsers = user;
@@ -155,14 +208,16 @@ public class DataManager {
     }
     
     public boolean register(Users user) {
-        // Cek username unik
+
         for (Users u : daftarUsers) {
             if (u.getUsername().equals(user.getUsername())) {
                 return false; 
             }
         }
+
         daftarUsers.add(user);
         FileHandler.simpanKeFile("users.txt", user.toString());
+        
         return true;
     }
     
@@ -190,19 +245,20 @@ public class DataManager {
         return daftarPesanan;
     }
 
+    public List<Konsultasi> getHistoryKonsultasi() {
+        return daftarKonsultasi;
+    }
+
     public List<Peta> getLokasi() {
         List<Peta> lokasiList = new ArrayList<>();
 
         lokasiList.add(new Peta("Jebres", 10));
-        lokasiList.add(new Peta("RS. Muwardi", 5));
+        lokasiList.add(new Peta("RS. Moewardi", 5));
         lokasiList.add(new Peta("Slamet Riyadi", 8));
         lokasiList.add(new Peta("Alun-alun", 6));
         lokasiList.add(new Peta("Pasar Kliwon", 8));
         lokasiList.add(new Peta("Pasar Gede", 3));
-        
-
-
-
+    
         return lokasiList;
     }
 }

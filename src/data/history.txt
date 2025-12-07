@@ -1,0 +1,4 @@
+1|projekpbo|06-12-2025|Pembelian|PSN0001|06-12-2025 17:42:40|antar|Pasar Gede (3 KM) - Jl ... No ..., Solo|online|5000.00|9000.00|2000.00|16000.00|OBT001,1
+2|projekpbo|06-12-2025|Konsultasi|KSL0001|06-12-2025 17:52:51|PROJEK PBO|Sakit Kepala|Bodrex atau Paracetamol
+3|admin|06-12-2025|Pembelian|PSN0001|06-12-2025 19:58:05|ambil|Diambil di Apotek|online|15000.00|0.00|0.00|15000.00|OBT010,1
+4|admin|06-12-2025|Konsultasi|KSL0001|06-12-2025 22:26:00|Administrator|Demam|Paracetamol 500mg atau Panadol Extra
